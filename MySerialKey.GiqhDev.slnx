@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/MySerialKey.GiqhDev/MySerialKey.GiqhDev.csproj" />
+  <Project Path="tests/MySerialKey.GiqhDev.Tests/MySerialKey.GiqhDev.Tests.csproj" />
+  <Project Path="samples/MySerialKey.GiqhDev.ConsoleSample/MySerialKey.GiqhDev.ConsoleSample.csproj" />
+</Solution>
