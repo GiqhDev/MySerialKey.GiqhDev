@@ -118,12 +118,16 @@ The package targets:
 
 ## Publishing
 
-Publishing to NuGet.org is handled by GitHub Actions.
+Publishing to NuGet.org is handled by GitHub Actions trusted publishing.
 
-Create this repository secret before merging to `master`:
+Create a trusted publishing policy on NuGet.org with these values:
 
 ```text
-NUGET_API_KEY
+Package Owner: GiqhDev
+Repository Owner: GiqhDev
+Repository: MySerialKey.GiqhDev
+Workflow File: publish-nuget.yml
+Environment: leave empty
 ```
 
 The workflow runs on pushes to `master` and can also be started manually from the GitHub Actions tab.
