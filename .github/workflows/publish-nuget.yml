@@ -42,6 +42,9 @@ jobs:
       - name: Pack
         run: dotnet pack $env:PACKAGE_PROJECT_PATH -c Release --no-build -o $env:PACKAGE_OUTPUT_PATH
 
+      - name: List packages
+        run: Get-ChildItem -Path $env:PACKAGE_OUTPUT_PATH -File
+
       - name: NuGet login
         uses: NuGet/login@v1
         id: nuget-login
@@ -49,7 +52,15 @@ jobs:
           user: GiqhDev
 
       - name: Publish package
-        run: dotnet nuget push "$env:PACKAGE_OUTPUT_PATH/*.nupkg" --source $env:NUGET_SOURCE --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --skip-duplicate
+        run: |
+          Get-ChildItem -Path $env:PACKAGE_OUTPUT_PATH -Filter *.nupkg -File |
+            ForEach-Object {
+              dotnet nuget push $_.FullName --source $env:NUGET_SOURCE --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --skip-duplicate
+            }
 
       - name: Publish symbols
-        run: dotnet nuget push "$env:PACKAGE_OUTPUT_PATH/*.snupkg" --source $env:NUGET_SOURCE --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --skip-duplicate
+        run: |
+          Get-ChildItem -Path $env:PACKAGE_OUTPUT_PATH -Filter *.snupkg -File |
+            ForEach-Object {
+              dotnet nuget push $_.FullName --source $env:NUGET_SOURCE --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --skip-duplicate
+            }
