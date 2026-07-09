@@ -12,7 +12,7 @@ The package uses cryptographically secure randomness and has no third-party runt
 
 ## Status
 
-Version `1.0.0` is prepared as a local NuGet package candidate.
+Version `1.0.2` is published on NuGet.org.
 
 ## Installation
 
