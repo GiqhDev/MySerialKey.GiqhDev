@@ -116,6 +116,18 @@ The package targets:
 - .NET 9
 - .NET 10
 
+## Publishing
+
+Publishing to NuGet.org is handled by GitHub Actions.
+
+Create this repository secret before merging to `master`:
+
+```text
+NUGET_API_KEY
+```
+
+The workflow runs on pushes to `master` and can also be started manually from the GitHub Actions tab.
+
 ## Roadmap
 
 - v1.1: additional pattern presets and optional checksum.
