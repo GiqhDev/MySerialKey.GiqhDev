@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 env:
   SOLUTION_PATH: MySerialKey.GiqhDev.slnx
@@ -41,8 +42,14 @@ jobs:
       - name: Pack
         run: dotnet pack $env:PACKAGE_PROJECT_PATH -c Release --no-build -o $env:PACKAGE_OUTPUT_PATH
 
+      - name: NuGet login
+        uses: NuGet/login@v1
+        id: nuget-login
+        with:
+          user: GiqhDev
+
       - name: Publish package
-        run: dotnet nuget push "$env:PACKAGE_OUTPUT_PATH/*.nupkg" --source $env:NUGET_SOURCE --api-key "${{ secrets.NUGET_API_KEY }}" --skip-duplicate
+        run: dotnet nuget push "$env:PACKAGE_OUTPUT_PATH/*.nupkg" --source $env:NUGET_SOURCE --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --skip-duplicate
 
       - name: Publish symbols
-        run: dotnet nuget push "$env:PACKAGE_OUTPUT_PATH/*.snupkg" --source $env:NUGET_SOURCE --api-key "${{ secrets.NUGET_API_KEY }}" --skip-duplicate
+        run: dotnet nuget push "$env:PACKAGE_OUTPUT_PATH/*.snupkg" --source $env:NUGET_SOURCE --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --skip-duplicate
