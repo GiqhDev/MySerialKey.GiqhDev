@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2
+
+- Disabled symbols package publishing to keep NuGet.org release uploads clean.
+
 ## 1.0.1
 
 - Added package icon for NuGet.org.

@@ -57,10 +57,3 @@ jobs:
             ForEach-Object {
               dotnet nuget push $_.FullName --source $env:NUGET_SOURCE --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --skip-duplicate
             }
-
-      - name: Publish symbols
-        run: |
-          Get-ChildItem -Path $env:PACKAGE_OUTPUT_PATH -Filter *.snupkg -File |
-            ForEach-Object {
-              dotnet nuget push $_.FullName --source $env:NUGET_SOURCE --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --skip-duplicate
-            }
