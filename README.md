@@ -311,7 +311,37 @@ ActivationClientResult result =
     await activationClient.ActivateAsync(request, cancellationToken);
 ```
 
-`ActivationClientResult` distinguishes network, timeout, authorization, rate-limit, service, response, license, and local-storage failures. `ActivationServiceError` provides versioned machine-readable server errors. The transport implementation remains under development; consumers can implement the interface without depending on a specific service vendor.
+`ActivationClientResult` distinguishes network, timeout, authorization, rate-limit, service, response, license, and local-storage failures. `ActivationServiceError` provides versioned machine-readable server errors.
+
+The built-in HTTP implementation receives a caller-owned `HttpClient`, so the application controls its base address, authentication handler, proxy, TLS policy, and lifetime:
+
+```csharp
+var http = new HttpClient(authenticationHandler)
+{
+    BaseAddress = new Uri("https://licenses.example.com/")
+};
+
+var online = new HttpOnlineActivationClient(
+    http,
+    licenses,
+    trustedKeys,
+    new HttpOnlineActivationClientOptions
+    {
+        MaxRetries = 2,
+        RetryDelay = TimeSpan.FromMilliseconds(250)
+    });
+
+ActivationClientResult result =
+    await online.ActivateAsync(request, cancellationToken);
+```
+
+The default relative endpoints are:
+
+- `POST api/v1/activations`
+- `POST api/v1/activations/renewals`
+- `POST api/v1/activations/deactivations`
+
+All endpoints can be replaced through `HttpOnlineActivationClientOptions`. Every attempt sends the same `OperationId` in the body and `Idempotency-Key` header. Retries are limited to timeouts, transport errors, HTTP 408, HTTP 429, and HTTP 5xx responses. Successful activation and renewal responses must contain a matching operation ID, schema version 1, trusted-time field, and a valid `MSL1` token for the requested product and installation. The token is cryptographically validated before `ILicenseStore.Save` is called. Network or service failures never delete an existing local license.
 
 ## Security Notes
 

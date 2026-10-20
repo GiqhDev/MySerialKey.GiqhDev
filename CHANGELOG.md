@@ -29,6 +29,10 @@
 - Added versioned, product-neutral online activation, renewal, and deactivation contracts.
 - Added stable operation identifiers for idempotent service requests.
 - Added a transport-independent online activation client abstraction and typed client/service results.
+- Added an injectable `HttpClient` implementation for activation, renewal, and deactivation.
+- Added bounded versioned JSON responses, configurable endpoints, and typed HTTP/service failure mapping.
+- Added idempotent transient retries using a stable operation body and `Idempotency-Key` header.
+- Added mandatory `MSL1` signature, product, installation, and validity checks before online license persistence.
 - Fixed atomic temporary paths for concurrent storage on .NET Framework `MAX_PATH` environments.
 - Preserved the existing serial and HMAC APIs for legacy compatibility.
 - Made the default serial segment collection immutable.
