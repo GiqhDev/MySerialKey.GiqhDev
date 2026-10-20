@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Security.AccessControl;
 using System.Security.Principal;
+using System.Diagnostics;
 using System.Text;
 #if NET6_0_OR_GREATER
 using System.Runtime.Versioning;
@@ -172,6 +173,51 @@ public sealed class ProtectedStorageTests
     }
 
     [TestMethod]
+    public void InstallationId_ConcurrentProcessesReturnSingleIdentifier()
+    {
+        string root = CreateTemporaryRoot();
+        string gateFile = Path.Combine(root, "start.gate");
+        Directory.CreateDirectory(root);
+        var processes = new List<Process>();
+
+        try
+        {
+            for (int index = 0; index < 8; index++)
+            {
+                processes.Add(StartProbe(root, gateFile));
+            }
+
+            File.WriteAllText(gateFile, "start");
+            var identifiers = new List<string>();
+
+            foreach (Process process in processes)
+            {
+                string output = process.StandardOutput.ReadToEnd().Trim();
+                string error = process.StandardError.ReadToEnd().Trim();
+
+                Assert.IsTrue(process.WaitForExit(30000), "The process probe timed out.");
+                Assert.AreEqual(0, process.ExitCode, error);
+                identifiers.Add(output);
+            }
+
+            Assert.AreEqual(1, identifiers.Distinct(StringComparer.Ordinal).Count());
+            Assert.IsTrue(Guid.TryParseExact(identifiers[0], "N", out Guid parsed));
+        }
+        finally
+        {
+            foreach (Process process in processes)
+            {
+                process.Dispose();
+            }
+
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, true);
+            }
+        }
+    }
+
+    [TestMethod]
     public void ProtectedLicenseStore_RoundTripsPortableSignedLicense()
     {
         WithStore((store, unusedRoot) =>
@@ -224,5 +270,65 @@ public sealed class ProtectedStorageTests
             Path.GetTempPath(),
             "MySerialKey.GiqhDev.Tests",
             Guid.NewGuid().ToString("N"));
+    }
+
+    private static Process StartProbe(string storageRoot, string gateFile)
+    {
+        string probePath = GetProbePath();
+        var startInfo = new ProcessStartInfo
+        {
+#if NET48
+            FileName = probePath,
+            Arguments = Quote(storageRoot) + " Example.Product " + Quote(gateFile),
+#else
+            FileName = "dotnet",
+            Arguments = Quote(probePath) + " " + Quote(storageRoot) +
+                " Example.Product " + Quote(gateFile),
+#endif
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            CreateNoWindow = true
+        };
+
+        return Process.Start(startInfo)
+            ?? throw new InvalidOperationException("The process probe could not be started.");
+    }
+
+    private static string GetProbePath()
+    {
+        var frameworkDirectory = new DirectoryInfo(AppContext.BaseDirectory);
+        string configuration = frameworkDirectory.Parent?.Name
+            ?? throw new InvalidOperationException("The test configuration directory was not found.");
+        DirectoryInfo testsDirectory = frameworkDirectory.Parent?.Parent?.Parent?.Parent
+            ?? throw new InvalidOperationException("The tests directory was not found.");
+
+#if NET48
+        const string framework = "net48";
+        const string executable = "MySerialKey.GiqhDev.ProcessProbe.exe";
+#else
+        const string framework = "net10.0";
+        const string executable = "MySerialKey.GiqhDev.ProcessProbe.dll";
+#endif
+
+        string probePath = Path.Combine(
+            testsDirectory.FullName,
+            "MySerialKey.GiqhDev.ProcessProbe",
+            "bin",
+            configuration,
+            framework,
+            executable);
+
+        if (!File.Exists(probePath))
+        {
+            throw new FileNotFoundException("The process probe was not built.", probePath);
+        }
+
+        return probePath;
+    }
+
+    private static string Quote(string value)
+    {
+        return "\"" + value.Replace("\"", "\\\"") + "\"";
     }
 }
