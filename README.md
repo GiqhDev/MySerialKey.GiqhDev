@@ -174,6 +174,19 @@ LicenseStoreReadResult storedLicense = licenses.Load("Example.Product");
 
 Use `WindowsStoragePaths.GetMachineRoot()` together with `new DpapiDataProtector(useMachineScope: true)` for machine-wide data. The installer or host application remains responsible for assigning suitable directory permissions. Stored entries are scoped by `productCode`, written atomically, protected with purpose-specific entropy, and return typed states for missing, corrupted, or unavailable data.
 
+An elevated installer can replace inherited permissions with an explicit ACL. Pass the Windows identities that must run the application:
+
+```csharp
+using System.Security.Principal;
+
+SecurityIdentifier applicationIdentity = /* resolve the account or group SID */;
+WindowsStoragePermissions.ApplyRestrictedMachineAcl(
+    WindowsStoragePaths.GetMachineRoot(),
+    applicationIdentity);
+```
+
+The built-in installation provider persists only a random GUID scoped by `productCode`. It does not read MAC addresses, hardware serials, user names, or other personal data. Deleting the protected entry creates a new installation identity. Hardware fingerprinting is intentionally outside the default implementation; applications that require it must provide a custom `IInstallationIdProvider` and document their own collection and privacy policy.
+
 ## Security Notes
 
 Authenticated serials use HMAC-SHA256 with a compact truncated tag. They remain available for legacy compatibility and are not full offline licenses.
@@ -181,6 +194,8 @@ Authenticated serials use HMAC-SHA256 with a compact truncated tag. They remain 
 Do not embed high-value secrets in client applications when an attacker can inspect the machine or executable. For stronger scenarios, prefer server-side activation or asymmetric license signatures where clients only receive a public key.
 
 This package does not protect completely against reverse engineering, executable patching, secret extraction, validation bypasses, or attackers with full control of the client machine.
+
+DPAPI machine scope protects data for the computer but does not decide which local users may modify the file. Use a restrictive directory ACL for shared storage and grant access only to the identities that run the application.
 
 ## Compatibility
 

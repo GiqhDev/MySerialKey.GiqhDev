@@ -12,6 +12,8 @@
 - Added Windows DPAPI protection with current-user and machine scopes.
 - Added atomic file persistence with typed missing, corruption, and availability states.
 - Added conventional `%LocalAppData%` and `%ProgramData%` storage roots for Windows.
+- Added explicit Windows ACL setup for machine-wide storage directories.
+- Documented the random installation identifier's data and privacy boundaries.
 - Preserved the existing serial and HMAC APIs for legacy compatibility.
 - Made the default serial segment collection immutable.
 

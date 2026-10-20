@@ -1,4 +1,6 @@
 using System.Security.Cryptography;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Text;
 #if NET6_0_OR_GREATER
 using System.Runtime.Versioning;
@@ -33,6 +35,43 @@ public sealed class ProtectedStorageTests
             CollectionAssert.AreEqual(value, recovered);
             Assert.ThrowsExactly<CryptographicException>(
                 () => protector.Unprotect(protectedValue, "Another.Product/license"));
+        }
+    }
+
+    [TestMethod]
+    public void WindowsStoragePermissions_ApplyProtectedInheritedAcl()
+    {
+        string root = CreateTemporaryRoot();
+
+        try
+        {
+            SecurityIdentifier currentUser = WindowsIdentity.GetCurrent().User
+                ?? throw new InvalidOperationException("The current Windows user has no SID.");
+
+            WindowsStoragePermissions.ApplyRestrictedMachineAcl(root, currentUser);
+
+            DirectorySecurity security = new DirectoryInfo(root).GetAccessControl();
+            AuthorizationRuleCollection rules = security.GetAccessRules(
+                includeExplicit: true,
+                includeInherited: false,
+                typeof(SecurityIdentifier));
+            bool currentUserCanModify = rules
+                .OfType<FileSystemAccessRule>()
+                .Any(rule =>
+                    currentUser.Equals(rule.IdentityReference) &&
+                    rule.AccessControlType == AccessControlType.Allow &&
+                    (rule.FileSystemRights & FileSystemRights.Modify) == FileSystemRights.Modify);
+
+            Assert.IsTrue(security.AreAccessRulesProtected);
+            Assert.IsTrue(currentUserCanModify);
+            File.WriteAllText(Path.Combine(root, "access-check.txt"), "ok");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, true);
+            }
         }
     }
 
@@ -163,10 +202,7 @@ public sealed class ProtectedStorageTests
 
     private static void WithStore(Action<FileProtectedDataStore, string> test)
     {
-        string root = Path.Combine(
-            Path.GetTempPath(),
-            "MySerialKey.GiqhDev.Tests",
-            Guid.NewGuid().ToString("N"));
+        string root = CreateTemporaryRoot();
 
         try
         {
@@ -180,5 +216,13 @@ public sealed class ProtectedStorageTests
                 Directory.Delete(root, true);
             }
         }
+    }
+
+    private static string CreateTemporaryRoot()
+    {
+        return Path.Combine(
+            Path.GetTempPath(),
+            "MySerialKey.GiqhDev.Tests",
+            Guid.NewGuid().ToString("N"));
     }
 }
