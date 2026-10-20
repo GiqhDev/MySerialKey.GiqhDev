@@ -149,6 +149,31 @@ LicenseValidationResult result =
 
 `keyId` and the algorithm are covered by the signature. Multiple public keys can be trusted simultaneously during rotation. Signing must remain in trusted server or administrative code; never deploy the private key with a client application.
 
+## Protected Installation Storage in 2.0
+
+The storage contracts are product-neutral and keep installation identity, protected persistence, and signed-license persistence separate. The included Windows implementation uses DPAPI; consumers on other platforms can provide their own `IDataProtector` and `IProtectedDataStore` implementations.
+
+```csharp
+using MySerialKey.GiqhDev.Installation;
+using MySerialKey.GiqhDev.Licensing.Storage;
+using MySerialKey.GiqhDev.Storage;
+
+string storageRoot = WindowsStoragePaths.GetCurrentUserRoot();
+var protectedStore = new FileProtectedDataStore(
+    storageRoot,
+    new DpapiDataProtector());
+
+IInstallationIdProvider installations =
+    new PersistentInstallationIdProvider(protectedStore);
+string installationId = installations.GetOrCreate("Example.Product");
+
+ILicenseStore licenses = new ProtectedLicenseStore(protectedStore);
+licenses.Save("Example.Product", license);
+LicenseStoreReadResult storedLicense = licenses.Load("Example.Product");
+```
+
+Use `WindowsStoragePaths.GetMachineRoot()` together with `new DpapiDataProtector(useMachineScope: true)` for machine-wide data. The installer or host application remains responsible for assigning suitable directory permissions. Stored entries are scoped by `productCode`, written atomically, protected with purpose-specific entropy, and return typed states for missing, corrupted, or unavailable data.
+
 ## Security Notes
 
 Authenticated serials use HMAC-SHA256 with a compact truncated tag. They remain available for legacy compatibility and are not full offline licenses.
@@ -187,7 +212,8 @@ The workflow runs on pushes to `master` and can also be started manually from th
 ## Roadmap
 
 - v2.0 alpha: signed-license core and key rotation.
-- v2.0 next: protected installation identity and trial state.
+- v2.0 alpha: protected installation identity and signed-license persistence.
+- v2.0 next: configurable trial state.
 - v2.0 next: offline activation requests and activation-service contracts.
 
 ## License

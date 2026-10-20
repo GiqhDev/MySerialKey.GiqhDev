@@ -7,6 +7,11 @@
 - Added typed validation for product, installation, validity period, schema, and signing key.
 - Added simultaneous trusted-key support for signing-key rotation.
 - Added deterministic binary claim encoding and canonical feature ordering.
+- Added a random, stable, product-scoped installation identifier provider.
+- Added protected storage and signed-license store abstractions for custom platforms.
+- Added Windows DPAPI protection with current-user and machine scopes.
+- Added atomic file persistence with typed missing, corruption, and availability states.
+- Added conventional `%LocalAppData%` and `%ProgramData%` storage roots for Windows.
 - Preserved the existing serial and HMAC APIs for legacy compatibility.
 - Made the default serial segment collection immutable.
 
