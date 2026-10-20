@@ -20,6 +20,12 @@
 - Added an injectable clock, rollback tolerance, and optional trusted UTC time.
 - Added versioned protected trial persistence with corruption and deletion handling.
 - Added idempotent trial-to-license conversion while preserving trial history.
+- Added portable `MSAR1` offline activation requests with unique identifiers, cryptographic nonces, product and installation scope, and expiration.
+- Added signed `MSAP1` activation responses carrying the same standard `MSL1` license used by other activation channels.
+- Added administrative offline issuance without distributing private signing keys to client applications.
+- Added token and UTF-8 file import/export for offline requests and responses.
+- Added typed client-side validation for response signatures, trusted keys, request linkage, local scope, and validity windows.
+- Added protected consumption receipts and replay detection for imported offline requests.
 - Fixed atomic temporary paths for concurrent storage on .NET Framework `MAX_PATH` environments.
 - Preserved the existing serial and HMAC APIs for legacy compatibility.
 - Made the default serial segment collection immutable.

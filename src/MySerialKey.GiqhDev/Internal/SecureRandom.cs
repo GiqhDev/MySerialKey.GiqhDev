@@ -4,6 +4,22 @@ namespace MySerialKey.GiqhDev.Internal;
 
 internal static class SecureRandom
 {
+    public static byte[] GetBytes(int length)
+    {
+        if (length <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(length));
+        }
+
+        var value = new byte[length];
+        using (RandomNumberGenerator random = RandomNumberGenerator.Create())
+        {
+            random.GetBytes(value);
+        }
+
+        return value;
+    }
+
     public static int GetInt32(int maxExclusive)
     {
         if (maxExclusive <= 0)

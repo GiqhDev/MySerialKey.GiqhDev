@@ -214,6 +214,86 @@ if (current.IsActive)
 
 The protected state stores only UTC timestamps and a conversion marker. If the state is missing, the result is `NotStarted`; if it is malformed, the result is `Corrupted`. Neither condition starts a new trial automatically.
 
+## Offline Activation in 2.0
+
+Offline activation exchanges two portable, versioned tokens without placing an issuing secret in the client:
+
+1. The client creates an `MSAR1` request containing a unique request ID, a cryptographic nonce, the product, the installation, and an expiration time.
+2. A trusted administrative application imports that request and issues a signed `MSAP1` response with its private key.
+3. The client verifies the response, imports the embedded standard `MSL1` license, and records the consumed request in protected storage.
+
+Client-side request creation:
+
+```csharp
+using MySerialKey.GiqhDev.Activation.Offline;
+
+ActivationRequest request = ActivationRequest.Create(
+    "Example.Product",
+    installationId,
+    DateTimeOffset.UtcNow,
+    validity: TimeSpan.FromDays(2),
+    applicationVersion: "2.0.0");
+
+request.Save("activation-request.msar");
+```
+
+The `.msar` file can be transferred to an administrative computer. The request contains no secret and is not itself trusted; its identity, nonce, product, and installation become authenticated when the response is signed.
+
+Trusted administrative-side issuance:
+
+```csharp
+ActivationRequest request = ActivationRequest.Load("activation-request.msar");
+
+var claims = new LicenseClaims(
+    "license-01",
+    request.ProductCode,
+    DateTimeOffset.UtcNow)
+{
+    InstallationId = request.InstallationId,
+    Edition = "Professional",
+    Features = new[] { "feature-a", "feature-b" }
+};
+
+var issuer = new OfflineActivationIssuer();
+ActivationResponse response = issuer.Issue(
+    request,
+    claims,
+    "production-2026-01",
+    privateKey,
+    DateTimeOffset.UtcNow,
+    responseValidity: TimeSpan.FromDays(1));
+
+response.Save("activation-response.msap");
+```
+
+Keep `privateKey` only in trusted administrative or server-side code. The issuer rejects claims for a different product or installation and never changes the `MSL1` license format.
+
+Client-side response import:
+
+```csharp
+ActivationRequest originalRequest = ActivationRequest.Load("activation-request.msar");
+ActivationResponse response = ActivationResponse.Load("activation-response.msap");
+
+var activation = new OfflineActivationClient(
+    "Example.Product",
+    installationId,
+    licenses,
+    protectedStore);
+
+OfflineActivationImportResult import = activation.Import(
+    originalRequest,
+    response,
+    DateTimeOffset.UtcNow,
+    trustedKeys);
+
+if (!import.IsSuccess)
+{
+    Console.WriteLine(import.Status);
+}
+```
+
+Import verifies the `MSAP1` signature before trusting its payload, requires the original request and local product/installation, checks both deadlines, validates the embedded `MSL1` license normally, and stores a protected consumption receipt. Reusing the same request returns `ReplayDetected`. Keep the original `.msar` file until its response has been imported; a response cannot be applied against a newly generated request.
+
 ## Security Notes
 
 Authenticated serials use HMAC-SHA256 with a compact truncated tag. They remain available for legacy compatibility and are not full offline licenses.
@@ -257,8 +337,9 @@ The workflow runs on pushes to `master` and can also be started manually from th
 
 - v2.0 alpha: signed-license core and key rotation.
 - v2.0 alpha: protected installation identity and signed-license persistence.
-- v2.0 next: configurable trial state.
-- v2.0 next: offline activation requests and activation-service contracts.
+- v2.0 alpha: configurable protected trial state.
+- v2.0 alpha: signed offline activation requests and responses.
+- v2.0 next: online activation-service contracts.
 
 ## License
 
