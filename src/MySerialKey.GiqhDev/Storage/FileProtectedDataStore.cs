@@ -113,13 +113,15 @@ public sealed class FileProtectedDataStore : IProtectedDataStore
     {
         ValidateWrite(productCode, entryName, value);
         string path = GetEntryPath(productCode, entryName);
+        string? temporaryPath = null;
 
         try
         {
             EnsureDirectory(path);
             byte[] record = CreateRecord(productCode, entryName, value);
+            temporaryPath = CreateTemporaryPath(path);
             using (var stream = new FileStream(
-                path,
+                temporaryPath,
                 FileMode.CreateNew,
                 FileAccess.Write,
                 FileShare.None))
@@ -128,17 +130,26 @@ public sealed class FileProtectedDataStore : IProtectedDataStore
                 stream.Flush();
             }
 
+            File.Move(temporaryPath, path);
+            temporaryPath = null;
             return ProtectedDataWriteResult.Success();
         }
         catch (IOException exception)
         {
-            return File.Exists(path)
+            return ExistsAfterCreateRace(path)
                 ? ProtectedDataWriteResult.AlreadyExists()
                 : ProtectedDataWriteResult.Unavailable(exception.Message);
         }
         catch (UnauthorizedAccessException exception)
         {
             return ProtectedDataWriteResult.Unavailable(exception.Message);
+        }
+        finally
+        {
+            if (temporaryPath is not null)
+            {
+                TryDelete(temporaryPath);
+            }
         }
     }
 
@@ -156,7 +167,7 @@ public sealed class FileProtectedDataStore : IProtectedDataStore
         {
             EnsureDirectory(path);
             byte[] record = CreateRecord(productCode, entryName, value);
-            temporaryPath = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
+            temporaryPath = CreateTemporaryPath(path);
 
             using (var stream = new FileStream(
                 temporaryPath,
@@ -329,6 +340,17 @@ public sealed class FileProtectedDataStore : IProtectedDataStore
         Directory.CreateDirectory(directory);
     }
 
+    private static string CreateTemporaryPath(string destinationPath)
+    {
+        string? directory = Path.GetDirectoryName(destinationPath);
+        if (directory is null)
+        {
+            throw new InvalidOperationException("Protected entry directory is invalid.");
+        }
+
+        return Path.Combine(directory, Guid.NewGuid().ToString("N") + ".tmp");
+    }
+
     private static void ValidateWrite(
         string productCode,
         string entryName,
@@ -372,5 +394,20 @@ public sealed class FileProtectedDataStore : IProtectedDataStore
         catch (UnauthorizedAccessException)
         {
         }
+    }
+
+    private static bool ExistsAfterCreateRace(string path)
+    {
+        for (int attempt = 0; attempt < 25; attempt++)
+        {
+            if (File.Exists(path))
+            {
+                return true;
+            }
+
+            Thread.Sleep(10);
+        }
+
+        return File.Exists(path);
     }
 }

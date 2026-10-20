@@ -15,6 +15,12 @@
 - Added explicit Windows ACL setup for machine-wide storage directories.
 - Documented the random installation identifier's data and privacy boundaries.
 - Added cross-process race coverage for stable installation identity creation.
+- Added explicit, configurable trial start with a seven-day suggested duration.
+- Added read-only trial queries, typed validation states, and remaining time.
+- Added an injectable clock, rollback tolerance, and optional trusted UTC time.
+- Added versioned protected trial persistence with corruption and deletion handling.
+- Added idempotent trial-to-license conversion while preserving trial history.
+- Fixed atomic temporary paths for concurrent storage on .NET Framework `MAX_PATH` environments.
 - Preserved the existing serial and HMAC APIs for legacy compatibility.
 - Made the default serial segment collection immutable.
 

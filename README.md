@@ -187,6 +187,33 @@ WindowsStoragePermissions.ApplyRestrictedMachineAcl(
 
 The built-in installation provider persists only a random GUID scoped by `productCode`. It does not read MAC addresses, hardware serials, user names, or other personal data. Deleting the protected entry creates a new installation identity. Hardware fingerprinting is intentionally outside the default implementation; applications that require it must provide a custom `IInstallationIdProvider` and document their own collection and privacy policy.
 
+## Configurable Trial in 2.0
+
+Trial creation is explicit. The consuming application decides which business event calls `Start`; reading state never starts or resets the trial.
+
+```csharp
+using MySerialKey.GiqhDev.Trial;
+
+var trial = new ProtectedTrialService(
+    protectedStore,
+    new TrialOptions(TimeSpan.FromDays(14)));
+
+// Call only after the application-specific event that begins the trial.
+TrialValidationResult started = trial.Start("Example.Product");
+
+// Normal application launch: validates time and records a successful run.
+TrialValidationResult current = trial.Validate("Example.Product");
+
+if (current.IsActive)
+{
+    Console.WriteLine(current.Remaining);
+}
+```
+
+`Get` is a read-only query. `Validate` detects clock rollback beyond the configured tolerance and can accept a trusted UTC time obtained by the host application. `MarkConvertedToLicense` preserves the original start, expiration, last successful run, and trusted-time history.
+
+The protected state stores only UTC timestamps and a conversion marker. If the state is missing, the result is `NotStarted`; if it is malformed, the result is `Corrupted`. Neither condition starts a new trial automatically.
+
 ## Security Notes
 
 Authenticated serials use HMAC-SHA256 with a compact truncated tag. They remain available for legacy compatibility and are not full offline licenses.
@@ -194,6 +221,8 @@ Authenticated serials use HMAC-SHA256 with a compact truncated tag. They remain 
 Do not embed high-value secrets in client applications when an attacker can inspect the machine or executable. For stronger scenarios, prefer server-side activation or asymmetric license signatures where clients only receive a public key.
 
 This package does not protect completely against reverse engineering, executable patching, secret extraction, validation bypasses, or attackers with full control of the client machine.
+
+A local administrator can delete protected trial state, replace application binaries, or bypass client-side validation. MySerialKey detects recoverable corruption and clock rollback, but cannot absolutely prevent trial reset on a machine controlled by an attacker. High-value enforcement requires a trusted activation service and server-maintained state.
 
 DPAPI machine scope protects data for the computer but does not decide which local users may modify the file. Use a restrictive directory ACL for shared storage and grant access only to the identities that run the application.
 
