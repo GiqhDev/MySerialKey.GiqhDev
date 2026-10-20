@@ -1,7 +1,8 @@
 using System.Text;
+using MySerialKey.GiqhDev.Generation;
 using MySerialKey.GiqhDev.Internal;
 
-namespace MySerialKey.GiqhDev;
+namespace MySerialKey.GiqhDev.Formatting;
 
 /// <summary>
 /// Normalizes serial key input for validation and display.

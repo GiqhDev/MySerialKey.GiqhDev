@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using MySerialKey.GiqhDev.Generation;
 
 namespace MySerialKey.GiqhDev.Internal;
 

@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Text;
+using MySerialKey.GiqhDev.Formatting;
 using MySerialKey.GiqhDev.Internal;
+using MySerialKey.GiqhDev.Security;
 
-namespace MySerialKey.GiqhDev;
+namespace MySerialKey.GiqhDev.Generation;
 
 /// <summary>
 /// Generates cryptographically secure serial keys.

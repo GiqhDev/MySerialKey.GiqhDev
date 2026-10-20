@@ -1,6 +1,6 @@
-using System.Collections.Generic;
+using MySerialKey.GiqhDev.Formatting;
 
-namespace MySerialKey.GiqhDev;
+namespace MySerialKey.GiqhDev.Generation;
 
 /// <summary>
 /// Defines the generation settings used to create serial keys.

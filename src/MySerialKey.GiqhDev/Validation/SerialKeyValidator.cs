@@ -1,8 +1,11 @@
 using System;
 using System.Linq;
+using MySerialKey.GiqhDev.Formatting;
+using MySerialKey.GiqhDev.Generation;
 using MySerialKey.GiqhDev.Internal;
+using MySerialKey.GiqhDev.Security;
 
-namespace MySerialKey.GiqhDev;
+namespace MySerialKey.GiqhDev.Validation;
 
 /// <summary>
 /// Validates serial key format and authenticity.

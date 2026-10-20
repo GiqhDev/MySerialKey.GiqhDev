@@ -1,4 +1,4 @@
-namespace MySerialKey.GiqhDev;
+namespace MySerialKey.GiqhDev.Formatting;
 
 /// <summary>
 /// Defines the serial format version.

@@ -1,5 +1,3 @@
-using System;
-
 namespace MySerialKey.GiqhDev.Internal;
 
 internal static class BaseAlphabetEncoder

@@ -1,7 +1,9 @@
+using MySerialKey.GiqhDev.Formatting;
+using MySerialKey.GiqhDev.Internal;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace MySerialKey.GiqhDev.Internal;
+namespace MySerialKey.GiqhDev.Security;
 
 internal static class SerialAuthenticator
 {

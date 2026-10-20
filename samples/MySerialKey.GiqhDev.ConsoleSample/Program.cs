@@ -1,5 +1,6 @@
 using System.Text;
-using MySerialKey.GiqhDev;
+using MySerialKey.GiqhDev.Generation;
+using MySerialKey.GiqhDev.Validation;
 
 string serial = SerialKeyGenerator.Generate();
 SerialValidationResult formatResult = SerialKeyValidator.Validate(serial);

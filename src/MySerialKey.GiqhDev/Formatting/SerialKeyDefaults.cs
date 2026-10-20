@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace MySerialKey.GiqhDev;
+namespace MySerialKey.GiqhDev.Formatting;
 
 /// <summary>
 /// Provides default serial key settings.
@@ -10,7 +8,8 @@ public static class SerialKeyDefaults
     /// <summary>
     /// Gets the default segment distribution.
     /// </summary>
-    public static IReadOnlyList<int> DefaultSegments { get; } = new[] { 5, 6, 5, 6 };
+    public static IReadOnlyList<int> DefaultSegments { get; } =
+        Array.AsReadOnly(new[] { 5, 6, 5, 6 });
 
     /// <summary>
     /// Gets the default separator.
