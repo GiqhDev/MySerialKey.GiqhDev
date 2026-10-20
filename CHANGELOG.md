@@ -26,6 +26,9 @@
 - Added token and UTF-8 file import/export for offline requests and responses.
 - Added typed client-side validation for response signatures, trusted keys, request linkage, local scope, and validity windows.
 - Added protected consumption receipts and replay detection for imported offline requests.
+- Added versioned, product-neutral online activation, renewal, and deactivation contracts.
+- Added stable operation identifiers for idempotent service requests.
+- Added a transport-independent online activation client abstraction and typed client/service results.
 - Fixed atomic temporary paths for concurrent storage on .NET Framework `MAX_PATH` environments.
 - Preserved the existing serial and HMAC APIs for legacy compatibility.
 - Made the default serial segment collection immutable.

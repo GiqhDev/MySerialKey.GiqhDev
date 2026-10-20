@@ -294,6 +294,25 @@ if (!import.IsSuccess)
 
 Import verifies the `MSAP1` signature before trusting its payload, requires the original request and local product/installation, checks both deadlines, validates the embedded `MSL1` license normally, and stores a protected consumption receipt. Reusing the same request returns `ReplayDetected`. Keep the original `.msar` file until its response has been imported; a response cannot be applied against a newly generated request.
 
+## Online Activation Contracts in 2.0
+
+The online API is transport-independent through `IOnlineActivationClient`. Versioned request models are available for activation, renewal, and deactivation. They carry a stable `OperationId` so an HTTP implementation can retry the same logical operation idempotently.
+
+```csharp
+using MySerialKey.GiqhDev.Activation.Online;
+
+var request = new OnlineActivationRequest(
+    serial,
+    "Example.Product",
+    applicationVersion,
+    installationId);
+
+ActivationClientResult result =
+    await activationClient.ActivateAsync(request, cancellationToken);
+```
+
+`ActivationClientResult` distinguishes network, timeout, authorization, rate-limit, service, response, license, and local-storage failures. `ActivationServiceError` provides versioned machine-readable server errors. The transport implementation remains under development; consumers can implement the interface without depending on a specific service vendor.
+
 ## Security Notes
 
 Authenticated serials use HMAC-SHA256 with a compact truncated tag. They remain available for legacy compatibility and are not full offline licenses.
