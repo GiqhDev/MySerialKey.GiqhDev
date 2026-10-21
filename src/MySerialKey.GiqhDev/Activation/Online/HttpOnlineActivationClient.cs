@@ -84,6 +84,27 @@ public sealed class HttpOnlineActivationClient : IOnlineActivationClient
     }
 
     /// <inheritdoc />
+    public Task<ActivationClientResult> QueryAsync(
+        OnlineLicenseQueryRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        Guard.NotNull(request, nameof(request));
+        return ExecuteLicenseOperationAsync(
+            _options.QueryEndpoint,
+            SerializeLicenseRequest(
+                request.SchemaVersion,
+                request.OperationId,
+                request.LicenseToken,
+                request.ProductCode,
+                request.ApplicationVersion,
+                request.InstallationId),
+            request.OperationId,
+            request.ProductCode,
+            request.InstallationId,
+            cancellationToken);
+    }
+
+    /// <inheritdoc />
     public async Task<ActivationClientResult> DeactivateAsync(
         OnlineLicenseDeactivationRequest request,
         CancellationToken cancellationToken = default)

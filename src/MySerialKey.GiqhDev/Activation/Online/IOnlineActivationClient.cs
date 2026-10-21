@@ -8,6 +8,11 @@ public interface IOnlineActivationClient
         OnlineActivationRequest request,
         CancellationToken cancellationToken = default);
 
+    /// <summary>Queries and imports the current validated installation license.</summary>
+    Task<ActivationClientResult> QueryAsync(
+        OnlineLicenseQueryRequest request,
+        CancellationToken cancellationToken = default);
+
     /// <summary>Renews and imports a validated signed license.</summary>
     Task<ActivationClientResult> RenewAsync(
         OnlineLicenseRenewalRequest request,

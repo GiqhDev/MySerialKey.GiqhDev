@@ -108,6 +108,31 @@ public sealed class HttpOnlineActivationClientTests
     }
 
     [TestMethod]
+    public async Task QueryAsync_UsesQueryEndpointAndImportsValidatedCurrentLicense()
+    {
+        using ECDsa key = CreateKey();
+        SignedLicense license = Sign(key);
+        var store = new RecordingLicenseStore();
+        var handler = new StubHandler((request, unusedCall) =>
+            Json(HttpStatusCode.OK, LicenseResponse(OperationId(request), license)));
+        using HttpClient http = CreateHttpClient(handler);
+        HttpOnlineActivationClient client = CreateClient(http, store, key);
+        var request = new OnlineLicenseQueryRequest(
+            license,
+            ProductCode,
+            "2.0.0",
+            InstallationId);
+
+        ActivationClientResult result = await client.QueryAsync(request);
+
+        Assert.AreEqual(ActivationClientStatus.Success, result.Status);
+        Assert.AreEqual(
+            "/" + ActivationServiceEndpoints.LicenseQuery,
+            handler.RequestUris.Single().AbsolutePath);
+        Assert.AreEqual(license.ToString(), store.SavedLicense!.ToString());
+    }
+
+    [TestMethod]
     public async Task DeactivateAsync_RemovesLicenseOnlyAfterValidServiceResponse()
     {
         using ECDsa key = CreateKey();
@@ -214,6 +239,7 @@ public sealed class HttpOnlineActivationClientTests
         public int Calls { get; private set; }
         public List<string> Bodies { get; } = new List<string>();
         public List<string> IdempotencyKeys { get; } = new List<string>();
+        public List<Uri> RequestUris { get; } = new List<Uri>();
 
         protected override async Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
@@ -222,6 +248,7 @@ public sealed class HttpOnlineActivationClientTests
             Calls++;
             Bodies.Add(await request.Content!.ReadAsStringAsync());
             IdempotencyKeys.Add(OperationId(request));
+            RequestUris.Add(request.RequestUri!);
             return _response(request, Calls);
         }
     }

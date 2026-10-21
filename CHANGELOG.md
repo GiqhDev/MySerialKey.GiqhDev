@@ -33,6 +33,8 @@
 - Added bounded versioned JSON responses, configurable endpoints, and typed HTTP/service failure mapping.
 - Added idempotent transient retries using a stable operation body and `Idempotency-Key` header.
 - Added mandatory `MSL1` signature, product, installation, and validity checks before online license persistence.
+- Added a current-license query contract and configurable HTTP endpoint.
+- Documented activation-service v1 authentication, rate limiting, administrative audit, and nonce-bound signed trusted time.
 - Fixed atomic temporary paths for concurrent storage on .NET Framework `MAX_PATH` environments.
 - Preserved the existing serial and HMAC APIs for legacy compatibility.
 - Made the default serial segment collection immutable.

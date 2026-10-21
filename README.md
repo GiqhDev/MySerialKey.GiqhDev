@@ -338,10 +338,13 @@ ActivationClientResult result =
 The default relative endpoints are:
 
 - `POST api/v1/activations`
+- `POST api/v1/activations/query`
 - `POST api/v1/activations/renewals`
 - `POST api/v1/activations/deactivations`
 
 All endpoints can be replaced through `HttpOnlineActivationClientOptions`. Every attempt sends the same `OperationId` in the body and `Idempotency-Key` header. Retries are limited to timeouts, transport errors, HTTP 408, HTTP 429, and HTTP 5xx responses. Successful activation and renewal responses must contain a matching operation ID, schema version 1, trusted-time field, and a valid `MSL1` token for the requested product and installation. The token is cryptographically validated before `ILicenseStore.Save` is called. Network or service failures never delete an existing local license.
+
+The complete server-side contract, including signed trusted time, administrative authentication, rate limiting, and audit requirements, is documented in [Activation Service Contract v1](docs/ACTIVATION_SERVICE_V1.md).
 
 ## Security Notes
 

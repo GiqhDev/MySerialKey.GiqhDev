@@ -68,11 +68,18 @@ public sealed class OnlineActivationContractTests
             "Example.Product",
             "2.0.0",
             "installation-01");
+        var query = new OnlineLicenseQueryRequest(
+            license,
+            "Example.Product",
+            "2.0.0",
+            "installation-01");
 
         Assert.AreEqual(license.ToString(), renewal.LicenseToken);
         Assert.AreEqual(license.ToString(), deactivation.LicenseToken);
+        Assert.AreEqual(license.ToString(), query.LicenseToken);
         Assert.AreEqual(1, renewal.SchemaVersion);
         Assert.AreEqual(1, deactivation.SchemaVersion);
+        Assert.AreEqual(1, query.SchemaVersion);
     }
 
     [TestMethod]

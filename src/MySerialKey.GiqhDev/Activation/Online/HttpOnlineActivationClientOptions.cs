@@ -6,13 +6,17 @@ public sealed class HttpOnlineActivationClientOptions
     /// <summary>Initializes options with conventional version-one endpoints.</summary>
     public HttpOnlineActivationClientOptions()
     {
-        ActivationEndpoint = new Uri("api/v1/activations", UriKind.Relative);
-        RenewalEndpoint = new Uri("api/v1/activations/renewals", UriKind.Relative);
-        DeactivationEndpoint = new Uri("api/v1/activations/deactivations", UriKind.Relative);
+        ActivationEndpoint = new Uri(ActivationServiceEndpoints.Activation, UriKind.Relative);
+        QueryEndpoint = new Uri(ActivationServiceEndpoints.LicenseQuery, UriKind.Relative);
+        RenewalEndpoint = new Uri(ActivationServiceEndpoints.Renewal, UriKind.Relative);
+        DeactivationEndpoint = new Uri(ActivationServiceEndpoints.Deactivation, UriKind.Relative);
     }
 
     /// <summary>Gets or sets the relative activation endpoint.</summary>
     public Uri ActivationEndpoint { get; set; }
+
+    /// <summary>Gets or sets the relative current-license query endpoint.</summary>
+    public Uri QueryEndpoint { get; set; }
 
     /// <summary>Gets or sets the relative renewal endpoint.</summary>
     public Uri RenewalEndpoint { get; set; }
@@ -32,6 +36,7 @@ public sealed class HttpOnlineActivationClientOptions
     internal void Validate()
     {
         ValidateEndpoint(ActivationEndpoint, nameof(ActivationEndpoint));
+        ValidateEndpoint(QueryEndpoint, nameof(QueryEndpoint));
         ValidateEndpoint(RenewalEndpoint, nameof(RenewalEndpoint));
         ValidateEndpoint(DeactivationEndpoint, nameof(DeactivationEndpoint));
         if (MaxRetries < 0 || MaxRetries > 10)
