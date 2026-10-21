@@ -26,5 +26,11 @@ public enum LicenseValidationStatus
     /// <summary>The license belongs to another product.</summary>
     WrongProduct,
     /// <summary>The license belongs to another installation.</summary>
-    WrongInstallation
+    WrongInstallation,
+    /// <summary>The license requires a successful online refresh.</summary>
+    RefreshRequired,
+    /// <summary>The refresh service is unavailable and the configured grace period is active.</summary>
+    GracePeriod,
+    /// <summary>The authenticated entitlement was revoked by its issuer.</summary>
+    Revoked
 }

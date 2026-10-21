@@ -18,7 +18,9 @@ public sealed class LicenseValidationResult
     /// <summary>
     /// Gets a value indicating whether validation succeeded.
     /// </summary>
-    public bool IsValid => Status == LicenseValidationStatus.Valid;
+    public bool IsValid =>
+        Status == LicenseValidationStatus.Valid ||
+        Status == LicenseValidationStatus.GracePeriod;
 
     /// <summary>
     /// Gets the validation status.
@@ -35,9 +37,11 @@ public sealed class LicenseValidationResult
     /// </summary>
     public string? Message { get; }
 
-    internal static LicenseValidationResult Success(LicenseClaims claims)
+    internal static LicenseValidationResult Success(
+        LicenseClaims claims,
+        LicenseValidationStatus status = LicenseValidationStatus.Valid)
     {
-        return new LicenseValidationResult(LicenseValidationStatus.Valid, claims, null);
+        return new LicenseValidationResult(status, claims, null);
     }
 
     internal static LicenseValidationResult Failure(

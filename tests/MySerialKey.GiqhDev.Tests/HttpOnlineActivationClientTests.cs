@@ -133,6 +133,40 @@ public sealed class HttpOnlineActivationClientTests
     }
 
     [TestMethod]
+    public async Task QueryAsync_PersistsAuthenticRevocationInsteadOfKeepingActiveLicense()
+    {
+        using ECDsa key = CreateKey();
+        SignedLicense activeLicense = Sign(key);
+        var revokedClaims = new LicenseClaims("license-online-01", ProductCode, Now)
+        {
+            InstallationId = InstallationId,
+            ExpiresAtUtc = Now.AddDays(30),
+            EntitlementStatus = LicenseEntitlementStatus.Revoked
+        };
+        SignedLicense revokedLicense = new EcdsaLicenseSigner().Sign(
+            revokedClaims,
+            KeyId,
+            key);
+        var store = new RecordingLicenseStore();
+        var handler = new StubHandler((request, unusedCall) =>
+            Json(HttpStatusCode.OK, LicenseResponse(OperationId(request), revokedLicense)));
+        using HttpClient http = CreateHttpClient(handler);
+        HttpOnlineActivationClient client = CreateClient(http, store, key);
+        var request = new OnlineLicenseQueryRequest(
+            activeLicense,
+            ProductCode,
+            "2.0.0",
+            InstallationId);
+
+        ActivationClientResult result = await client.QueryAsync(request);
+
+        Assert.AreEqual(ActivationClientStatus.Revoked, result.Status);
+        Assert.IsFalse(result.IsSuccess);
+        Assert.AreEqual(LicenseValidationStatus.Revoked, result.LicenseValidation!.Status);
+        Assert.AreEqual(revokedLicense.ToString(), store.SavedLicense!.ToString());
+    }
+
+    [TestMethod]
     public async Task DeactivateAsync_RemovesLicenseOnlyAfterValidServiceResponse()
     {
         using ECDsa key = CreateKey();

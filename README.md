@@ -149,6 +149,24 @@ LicenseValidationResult result =
 
 `keyId` and the algorithm are covered by the signature. Multiple public keys can be trusted simultaneously during rotation. Signing must remain in trusted server or administrative code; never deploy the private key with a client application.
 
+Payload schema 2 keeps the same `MSL1` envelope and adds optional periodic refresh and signed entitlement state:
+
+```csharp
+claims.NextCheckInUtc = DateTimeOffset.UtcNow.AddDays(7);
+claims.EntitlementStatus = LicenseEntitlementStatus.Active;
+
+var policy = new LicenseValidationPolicy(
+    gracePeriod: TimeSpan.FromDays(2),
+    isOnlineRefreshUnavailable: refreshAttemptFailed);
+var context = new LicenseValidationContext(
+    "Example.Product",
+    DateTimeOffset.UtcNow,
+    installationId,
+    policy);
+```
+
+After `NextCheckInUtc`, validation returns `RefreshRequired`. `GracePeriod` is returned only when the consumer confirms that an online refresh was attempted but the service is unavailable, and only inside the configured grace duration. `GracePeriod` remains usable through `IsValid`; `RefreshRequired` and `Revoked` do not. An authentic revoked response from the online client is stored locally and returned as `ActivationClientStatus.Revoked`, preventing a previously active token from remaining effective. Existing signed payload schema 1 licenses remain supported.
+
 ## Protected Installation Storage in 2.0
 
 The storage contracts are product-neutral and keep installation identity, protected persistence, and signed-license persistence separate. The included Windows implementation uses DPAPI; consumers on other platforms can provide their own `IDataProtector` and `IProtectedDataStore` implementations.

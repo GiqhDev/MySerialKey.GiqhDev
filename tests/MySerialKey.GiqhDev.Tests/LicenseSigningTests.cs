@@ -209,6 +209,135 @@ public sealed class LicenseSigningTests
     }
 
     [TestMethod]
+    public void SchemaOneLicense_RemainsSupported()
+    {
+        using ECDsa privateKey = CreateKey();
+        LicenseClaims claims = CreateClaims();
+        claims.SchemaVersion = 1;
+        SignedLicense license = Sign(claims, "legacy-schema-1", privateKey);
+
+        LicenseValidationResult result = Validate(
+            SignedLicense.Parse(license.ToString()),
+            privateKey,
+            "Example.Product",
+            "installation-01",
+            IssuedAt.AddDays(1));
+
+        Assert.AreEqual(LicenseValidationStatus.Valid, result.Status);
+        Assert.AreEqual(1, result.Claims!.SchemaVersion);
+        Assert.IsNull(result.Claims.NextCheckInUtc);
+        Assert.AreEqual(LicenseEntitlementStatus.Active, result.Claims.EntitlementStatus);
+    }
+
+    [TestMethod]
+    public void SchemaTwo_RoundTripsRefreshAndEntitlementClaims()
+    {
+        using ECDsa privateKey = CreateKey();
+        LicenseClaims claims = CreateClaims();
+        claims.NextCheckInUtc = IssuedAt.AddDays(2);
+        SignedLicense license = Sign(claims, "schema-2", privateKey);
+
+        LicenseValidationResult result = Validate(
+            license,
+            privateKey,
+            "Example.Product",
+            "installation-01",
+            IssuedAt.AddDays(1));
+
+        Assert.AreEqual(LicenseValidationStatus.Valid, result.Status);
+        Assert.AreEqual(2, result.Claims!.SchemaVersion);
+        Assert.AreEqual(IssuedAt.AddDays(2), result.Claims.NextCheckInUtc);
+        Assert.AreEqual(LicenseEntitlementStatus.Active, result.Claims.EntitlementStatus);
+    }
+
+    [TestMethod]
+    public void RefreshDeadline_UsesConsumerControlledGraceOnlyWhenServiceIsUnavailable()
+    {
+        using ECDsa privateKey = CreateKey();
+        LicenseClaims claims = CreateClaims();
+        claims.NextCheckInUtc = IssuedAt.AddDays(1);
+        SignedLicense license = Sign(claims, "schema-2", privateKey);
+
+        LicenseValidationResult required = Validate(
+            license,
+            privateKey,
+            "Example.Product",
+            "installation-01",
+            IssuedAt.AddDays(1));
+        LicenseValidationResult grace = Validate(
+            license,
+            privateKey,
+            "Example.Product",
+            "installation-01",
+            IssuedAt.AddDays(2),
+            new LicenseValidationPolicy(TimeSpan.FromDays(2), true));
+        LicenseValidationResult graceEnded = Validate(
+            license,
+            privateKey,
+            "Example.Product",
+            "installation-01",
+            IssuedAt.AddDays(3),
+            new LicenseValidationPolicy(TimeSpan.FromDays(2), true));
+
+        Assert.AreEqual(LicenseValidationStatus.RefreshRequired, required.Status);
+        Assert.IsFalse(required.IsValid);
+        Assert.AreEqual(LicenseValidationStatus.GracePeriod, grace.Status);
+        Assert.IsTrue(grace.IsValid);
+        Assert.AreEqual(LicenseValidationStatus.RefreshRequired, graceEnded.Status);
+    }
+
+    [TestMethod]
+    public void RevokedClaim_ProducesRevokedStatus()
+    {
+        using ECDsa privateKey = CreateKey();
+        LicenseClaims claims = CreateClaims();
+        claims.EntitlementStatus = LicenseEntitlementStatus.Revoked;
+        SignedLicense license = Sign(claims, "schema-2", privateKey);
+
+        LicenseValidationResult result = Validate(
+            license,
+            privateKey,
+            "Example.Product",
+            "installation-01",
+            IssuedAt.AddHours(1));
+
+        Assert.AreEqual(LicenseValidationStatus.Revoked, result.Status);
+        Assert.IsFalse(result.IsValid);
+    }
+
+    [TestMethod]
+    public void Sign_RejectsCheckInAtOrAfterExpiration()
+    {
+        using ECDsa privateKey = CreateKey();
+        LicenseClaims claims = CreateClaims();
+        claims.NextCheckInUtc = IssuedAt.AddDays(2);
+        claims.ExpiresAtUtc = IssuedAt.AddDays(2);
+
+        Assert.ThrowsExactly<ArgumentException>(
+            () => Sign(claims, "schema-2", privateKey));
+    }
+
+    [TestMethod]
+    public void RefreshDeadline_WithMaximumGracePeriodDoesNotOverflow()
+    {
+        using ECDsa privateKey = CreateKey();
+        LicenseClaims claims = CreateClaims();
+        claims.NextCheckInUtc = IssuedAt.AddDays(1);
+        SignedLicense license = Sign(claims, "schema-2", privateKey);
+
+        LicenseValidationResult result = Validate(
+            license,
+            privateKey,
+            "Example.Product",
+            "installation-01",
+            IssuedAt.AddDays(2),
+            new LicenseValidationPolicy(TimeSpan.MaxValue, true));
+
+        Assert.AreEqual(LicenseValidationStatus.GracePeriod, result.Status);
+        Assert.IsTrue(result.IsValid);
+    }
+
+    [TestMethod]
     public void Parse_RejectsMalformedTokens()
     {
         Assert.IsFalse(SignedLicense.TryParse("not-a-license", out _));
@@ -253,10 +382,15 @@ public sealed class LicenseSigningTests
         ECDsa publicKey,
         string productCode,
         string? installationId,
-        DateTimeOffset nowUtc)
+        DateTimeOffset nowUtc,
+        LicenseValidationPolicy? refreshPolicy = null)
     {
         var validator = new EcdsaLicenseValidator();
-        var context = new LicenseValidationContext(productCode, nowUtc, installationId);
+        var context = new LicenseValidationContext(
+            productCode,
+            nowUtc,
+            installationId,
+            refreshPolicy);
         var trustedKeys = new[]
         {
             new LicenseVerificationKey(signedLicense.KeyId, publicKey)

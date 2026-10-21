@@ -23,7 +23,7 @@ public sealed class LicenseClaims
     /// <summary>
     /// Gets or sets the payload schema version.
     /// </summary>
-    public int SchemaVersion { get; set; } = 1;
+    public int SchemaVersion { get; set; } = 2;
 
     /// <summary>
     /// Gets or sets the unique license identifier.
@@ -59,6 +59,14 @@ public sealed class LicenseClaims
     /// Gets or sets the optional UTC expiration instant.
     /// </summary>
     public DateTimeOffset? ExpiresAtUtc { get; set; }
+
+    /// <summary>
+    /// Gets or sets the optional UTC instant after which an online refresh is required.
+    /// </summary>
+    public DateTimeOffset? NextCheckInUtc { get; set; }
+
+    /// <summary>Gets or sets the signed entitlement state.</summary>
+    public LicenseEntitlementStatus EntitlementStatus { get; set; }
 
     /// <summary>
     /// Gets or sets the optional installation to which the license is bound.

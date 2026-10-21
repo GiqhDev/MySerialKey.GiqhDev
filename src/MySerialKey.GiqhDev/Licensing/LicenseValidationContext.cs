@@ -14,7 +14,8 @@ public sealed class LicenseValidationContext
     public LicenseValidationContext(
         string productCode,
         DateTimeOffset nowUtc,
-        string? installationId = null)
+        string? installationId = null,
+        LicenseValidationPolicy? refreshPolicy = null)
     {
         Guard.NotNull(productCode, nameof(productCode));
         if (string.IsNullOrWhiteSpace(productCode))
@@ -25,6 +26,7 @@ public sealed class LicenseValidationContext
         ProductCode = productCode;
         NowUtc = nowUtc;
         InstallationId = installationId;
+        RefreshPolicy = refreshPolicy;
     }
 
     /// <summary>
@@ -41,4 +43,7 @@ public sealed class LicenseValidationContext
     /// Gets the current installation identifier.
     /// </summary>
     public string? InstallationId { get; }
+
+    /// <summary>Gets the optional consumer policy for an unavailable online refresh.</summary>
+    public LicenseValidationPolicy? RefreshPolicy { get; }
 }

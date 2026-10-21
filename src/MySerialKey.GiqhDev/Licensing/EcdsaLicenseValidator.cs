@@ -68,7 +68,7 @@ public sealed class EcdsaLicenseValidator : ILicenseValidator
                 "The authenticated license payload is corrupted.");
         }
 
-        if (claims.SchemaVersion != LicenseClaimsSerializer.CurrentSchemaVersion)
+        if (!LicenseClaimsSerializer.IsSupportedSchema(claims.SchemaVersion))
         {
             return LicenseValidationResult.Failure(
                 LicenseValidationStatus.UnsupportedSchema,
@@ -121,7 +121,52 @@ public sealed class EcdsaLicenseValidator : ILicenseValidator
                 claims);
         }
 
+        if (claims.EntitlementStatus == LicenseEntitlementStatus.Revoked)
+        {
+            return LicenseValidationResult.Failure(
+                LicenseValidationStatus.Revoked,
+                "The license entitlement has been revoked.",
+                claims);
+        }
+
+        if (claims.NextCheckInUtc.HasValue && nowUtc >= claims.NextCheckInUtc.Value)
+        {
+            LicenseValidationPolicy? policy = context.RefreshPolicy;
+            if (policy is not null &&
+                policy.IsOnlineRefreshUnavailable &&
+                policy.GracePeriod > TimeSpan.Zero &&
+                IsBeforeGraceDeadline(
+                    nowUtc,
+                    claims.NextCheckInUtc.Value,
+                    policy.GracePeriod))
+            {
+                return LicenseValidationResult.Success(
+                    claims,
+                    LicenseValidationStatus.GracePeriod);
+            }
+
+            return LicenseValidationResult.Failure(
+                LicenseValidationStatus.RefreshRequired,
+                "The license requires an online refresh.",
+                claims);
+        }
+
         return LicenseValidationResult.Success(claims);
+    }
+
+    private static bool IsBeforeGraceDeadline(
+        DateTimeOffset nowUtc,
+        DateTimeOffset nextCheckInUtc,
+        TimeSpan gracePeriod)
+    {
+        long remainingTicks = DateTime.MaxValue.Ticks -
+            nextCheckInUtc.UtcDateTime.Ticks;
+        if (gracePeriod.Ticks > remainingTicks)
+        {
+            return true;
+        }
+
+        return nowUtc < nextCheckInUtc.Add(gracePeriod);
     }
 
     private static LicenseVerificationKey? FindKey(

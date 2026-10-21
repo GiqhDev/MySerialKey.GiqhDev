@@ -214,7 +214,8 @@ public sealed class HttpOnlineActivationClient : IOnlineActivationClient
                 license!,
                 context,
                 _trustedKeys);
-            if (!validation.IsValid)
+            bool isRevoked = validation.Status == LicenseValidationStatus.Revoked;
+            if (!validation.IsValid && !isRevoked)
             {
                 return new ActivationClientResult(
                     ActivationClientStatus.InvalidLicense,
@@ -233,10 +234,15 @@ public sealed class HttpOnlineActivationClient : IOnlineActivationClient
             }
 
             return new ActivationClientResult(
-                ActivationClientStatus.Success,
+                isRevoked
+                    ? ActivationClientStatus.Revoked
+                    : ActivationClientStatus.Success,
                 operationId,
                 license,
-                validation);
+                validation,
+                message: isRevoked
+                    ? "The signed license records a revoked entitlement."
+                    : null);
         }
     }
 

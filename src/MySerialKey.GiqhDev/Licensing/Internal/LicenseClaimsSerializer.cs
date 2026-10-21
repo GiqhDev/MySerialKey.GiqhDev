@@ -8,7 +8,8 @@ namespace MySerialKey.GiqhDev.Licensing.Internal;
 
 internal static class LicenseClaimsSerializer
 {
-    public const int CurrentSchemaVersion = 1;
+    public const int CurrentSchemaVersion = 2;
+    public const int MinimumSchemaVersion = 1;
     private const int MaximumStringBytes = 16384;
     private const int MaximumFeatures = 256;
     private static readonly byte[] Magic = { 0x4D, 0x53, 0x4C, 0x50 };
@@ -16,9 +17,9 @@ internal static class LicenseClaimsSerializer
 
     public static void ValidateForSigning(LicenseClaims claims)
     {
-        if (claims.SchemaVersion != CurrentSchemaVersion)
+        if (!IsSupportedSchema(claims.SchemaVersion))
         {
-            throw new ArgumentException("Only license schema version 1 can be signed.", nameof(claims));
+            throw new ArgumentException("The license schema version is not supported.", nameof(claims));
         }
 
         ValidateRequired(claims.LicenseId, "License identifier");
@@ -33,6 +34,36 @@ internal static class LicenseClaimsSerializer
             claims.ExpiresAtUtc.Value.ToUniversalTime() <= claims.NotBeforeUtc.ToUniversalTime())
         {
             throw new ArgumentException("Expiration must be later than the not-before time.", nameof(claims));
+        }
+
+        if (claims.SchemaVersion == 1 &&
+            (claims.NextCheckInUtc.HasValue ||
+             claims.EntitlementStatus != LicenseEntitlementStatus.Active))
+        {
+            throw new ArgumentException(
+                "Schema version 1 cannot contain refresh or entitlement-state claims.",
+                nameof(claims));
+        }
+
+        if (!Enum.IsDefined(typeof(LicenseEntitlementStatus), claims.EntitlementStatus))
+        {
+            throw new ArgumentException("The entitlement status is invalid.", nameof(claims));
+        }
+
+        if (claims.NextCheckInUtc.HasValue &&
+            claims.NextCheckInUtc.Value.ToUniversalTime() <= claims.NotBeforeUtc.ToUniversalTime())
+        {
+            throw new ArgumentException("Next check-in must be later than the not-before time.", nameof(claims));
+        }
+
+        if (claims.NextCheckInUtc.HasValue &&
+            claims.ExpiresAtUtc.HasValue &&
+            claims.NextCheckInUtc.Value.ToUniversalTime() >=
+                claims.ExpiresAtUtc.Value.ToUniversalTime())
+        {
+            throw new ArgumentException(
+                "Next check-in must be earlier than license expiration.",
+                nameof(claims));
         }
 
         if (claims.Features is null)
@@ -83,6 +114,17 @@ internal static class LicenseClaimsSerializer
                 WriteString(writer, feature);
             }
 
+            if (claims.SchemaVersion >= 2)
+            {
+                writer.Write(claims.NextCheckInUtc.HasValue);
+                if (claims.NextCheckInUtc.HasValue)
+                {
+                    writer.Write(claims.NextCheckInUtc.Value.UtcDateTime.Ticks);
+                }
+
+                writer.Write((int)claims.EntitlementStatus);
+            }
+
             writer.Flush();
             return stream.ToArray();
         }
@@ -122,6 +164,14 @@ internal static class LicenseClaimsSerializer
                 features.Add(ReadString(reader));
             }
 
+            DateTimeOffset? nextCheckInUtc = null;
+            LicenseEntitlementStatus entitlementStatus = LicenseEntitlementStatus.Active;
+            if (schemaVersion >= 2)
+            {
+                nextCheckInUtc = reader.ReadBoolean() ? ReadUtcTimestamp(reader) : null;
+                entitlementStatus = (LicenseEntitlementStatus)reader.ReadInt32();
+            }
+
             if (stream.Position != stream.Length)
             {
                 throw new FormatException("The license payload contains trailing data.");
@@ -134,11 +184,19 @@ internal static class LicenseClaimsSerializer
                 Edition = edition,
                 NotBeforeUtc = notBeforeUtc,
                 ExpiresAtUtc = expiresAtUtc,
+                NextCheckInUtc = nextCheckInUtc,
+                EntitlementStatus = entitlementStatus,
                 InstallationId = installationId,
                 MaxTerminals = maxTerminals,
                 Features = features
             };
         }
+    }
+
+    public static bool IsSupportedSchema(int schemaVersion)
+    {
+        return schemaVersion >= MinimumSchemaVersion &&
+            schemaVersion <= CurrentSchemaVersion;
     }
 
     private static void ValidateRequired(string value, string name)

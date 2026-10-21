@@ -19,6 +19,8 @@ public enum ActivationClientStatus
     InvalidResponse,
     /// <summary>The returned license failed cryptographic or contextual validation.</summary>
     InvalidLicense,
+    /// <summary>The service returned an authentic signed license with a revoked entitlement.</summary>
+    Revoked,
     /// <summary>The local license store could not complete the operation.</summary>
     StorageUnavailable
 }

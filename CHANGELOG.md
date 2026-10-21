@@ -35,6 +35,10 @@
 - Added mandatory `MSL1` signature, product, installation, and validity checks before online license persistence.
 - Added a current-license query contract and configurable HTTP endpoint.
 - Documented activation-service v1 authentication, rate limiting, administrative audit, and nonce-bound signed trusted time.
+- Added backward-compatible `MSL1` payload schema 2 with `NextCheckInUtc` and signed entitlement state.
+- Added typed `RefreshRequired`, `GracePeriod`, and `Revoked` validation outcomes.
+- Persist authentic signed revocation responses so a stale active license cannot remain locally effective.
+- Added a consumer-controlled grace policy that activates only after an unavailable online refresh.
 - Fixed atomic temporary paths for concurrent storage on .NET Framework `MAX_PATH` environments.
 - Preserved the existing serial and HMAC APIs for legacy compatibility.
 - Made the default serial segment collection immutable.
