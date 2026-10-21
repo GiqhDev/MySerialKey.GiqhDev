@@ -314,7 +314,7 @@ Import verifies the `MSAP1` signature before trusting its payload, requires the 
 
 ## Online Activation Contracts in 2.0
 
-The online API is transport-independent through `IOnlineActivationClient`. Versioned request models are available for activation, renewal, and deactivation. They carry a stable `OperationId` so an HTTP implementation can retry the same logical operation idempotently.
+The online API is transport-independent through `IOnlineActivationClient`. Versioned request models are available for activation, query, renewal, transfer, and deactivation. They carry a stable `OperationId` so an HTTP implementation can retry the same logical operation idempotently.
 
 ```csharp
 using MySerialKey.GiqhDev.Activation.Online;
@@ -358,9 +358,10 @@ The default relative endpoints are:
 - `POST api/v1/activations`
 - `POST api/v1/activations/query`
 - `POST api/v1/activations/renewals`
+- `POST api/v1/activations/transfers`
 - `POST api/v1/activations/deactivations`
 
-All endpoints can be replaced through `HttpOnlineActivationClientOptions`. Every attempt sends the same `OperationId` in the body and `Idempotency-Key` header. Retries are limited to timeouts, transport errors, HTTP 408, HTTP 429, and HTTP 5xx responses. Successful activation and renewal responses must contain a matching operation ID, schema version 1, trusted-time field, and a valid `MSL1` token for the requested product and installation. The token is cryptographically validated before `ILicenseStore.Save` is called. Network or service failures never delete an existing local license.
+All endpoints can be replaced through `HttpOnlineActivationClientOptions`. Every attempt sends the same `OperationId` in the body and `Idempotency-Key` header. Retries are limited to timeouts, transport errors, HTTP 408, HTTP 429, and HTTP 5xx responses. Successful activation, query, renewal, and transfer responses must contain a matching operation ID, schema version 1, trusted-time field, and a valid `MSL1` token for the requested product and installation. Transfer validates that the returned license is bound to the target installation before replacing local state. The returned token can then be delivered to that installation through a secure channel chosen by the consumer. Network or service failures never delete an existing local license.
 
 The complete server-side contract, including signed trusted time, administrative authentication, rate limiting, and audit requirements, is documented in [Activation Service Contract v1](docs/ACTIVATION_SERVICE_V1.md).
 

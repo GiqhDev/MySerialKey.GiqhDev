@@ -39,6 +39,7 @@
 - Added typed `RefreshRequired`, `GracePeriod`, and `Revoked` validation outcomes.
 - Persist authentic signed revocation responses so a stale active license cannot remain locally effective.
 - Added a consumer-controlled grace policy that activates only after an unavailable online refresh.
+- Added an idempotent online transfer contract that validates the returned target installation before replacing local state.
 - Fixed atomic temporary paths for concurrent storage on .NET Framework `MAX_PATH` environments.
 - Preserved the existing serial and HMAC APIs for legacy compatibility.
 - Made the default serial segment collection immutable.

@@ -12,6 +12,9 @@ public static class ActivationServiceEndpoints
     /// <summary>Renews a current signed license.</summary>
     public const string Renewal = "api/v1/activations/renewals";
 
+    /// <summary>Atomically moves a license to another installation.</summary>
+    public const string Transfer = "api/v1/activations/transfers";
+
     /// <summary>Deactivates a licensed installation.</summary>
     public const string Deactivation = "api/v1/activations/deactivations";
 

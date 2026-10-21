@@ -41,6 +41,10 @@ The service validates the serial and entitlement, enforces the allowed installat
 
 `POST /api/v1/activations/renewals`
 
+### Transfer
+
+`POST /api/v1/activations/transfers`
+
 ### Deactivate
 
 `POST /api/v1/activations/deactivations`
@@ -59,6 +63,22 @@ Query, renewal, and deactivation use this body:
 ```
 
 The service validates `MSL1` before using its claims and requires its product and installation to match the request. Query and renewal return the current signed license. Deactivation returns success only after the server-side installation state has been updated idempotently.
+
+Transfer uses a distinct body so the source and destination are explicit:
+
+```json
+{
+  "schemaVersion": 1,
+  "operationId": "32-character-guid-n-format",
+  "licenseToken": "MSL1.ES256...",
+  "productCode": "Example.Product",
+  "applicationVersion": "2.0.0",
+  "sourceInstallationId": "current-stable-installation-id",
+  "targetInstallationId": "new-stable-installation-id"
+}
+```
+
+The service verifies that the supplied license belongs to the source, atomically deactivates the source activation, activates the target within the entitlement limits, and returns an `MSL1` bound to the target. Repeating the same operation ID cannot consume another activation. If any step fails, the source remains active. The client validates the returned target binding before replacing its local token; the returned token can then be moved to the target application through a consumer-defined secure channel.
 
 ### License response
 

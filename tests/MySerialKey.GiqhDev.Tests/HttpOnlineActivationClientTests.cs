@@ -167,6 +167,64 @@ public sealed class HttpOnlineActivationClientTests
     }
 
     [TestMethod]
+    public async Task TransferAsync_ImportsOnlyLicenseBoundToTargetInstallation()
+    {
+        using ECDsa key = CreateKey();
+        SignedLicense sourceLicense = Sign(key);
+        var targetClaims = new LicenseClaims("license-online-01", ProductCode, Now)
+        {
+            InstallationId = "installation-02",
+            ExpiresAtUtc = Now.AddDays(30)
+        };
+        SignedLicense targetLicense = new EcdsaLicenseSigner().Sign(targetClaims, KeyId, key);
+        var store = new RecordingLicenseStore();
+        var handler = new StubHandler((request, unusedCall) =>
+            Json(HttpStatusCode.OK, LicenseResponse(OperationId(request), targetLicense)));
+        using HttpClient http = CreateHttpClient(handler);
+        HttpOnlineActivationClient client = CreateClient(http, store, key);
+        var request = new OnlineLicenseTransferRequest(
+            sourceLicense,
+            ProductCode,
+            "2.0.0",
+            InstallationId,
+            "installation-02");
+
+        ActivationClientResult result = await client.TransferAsync(request);
+
+        Assert.AreEqual(ActivationClientStatus.Success, result.Status);
+        Assert.AreEqual(targetLicense.ToString(), store.SavedLicense!.ToString());
+        Assert.AreEqual(
+            "/" + ActivationServiceEndpoints.Transfer,
+            handler.RequestUris.Single().AbsolutePath);
+        StringAssert.Contains(handler.Bodies.Single(), "\"sourceInstallationId\":\"installation-01\"");
+        StringAssert.Contains(handler.Bodies.Single(), "\"targetInstallationId\":\"installation-02\"");
+    }
+
+    [TestMethod]
+    public async Task TransferAsync_DoesNotReplaceLocalStateWithSourceBoundResponse()
+    {
+        using ECDsa key = CreateKey();
+        SignedLicense sourceLicense = Sign(key);
+        var store = new RecordingLicenseStore();
+        var handler = new StubHandler((request, unusedCall) =>
+            Json(HttpStatusCode.OK, LicenseResponse(OperationId(request), sourceLicense)));
+        using HttpClient http = CreateHttpClient(handler);
+        HttpOnlineActivationClient client = CreateClient(http, store, key);
+        var request = new OnlineLicenseTransferRequest(
+            sourceLicense,
+            ProductCode,
+            "2.0.0",
+            InstallationId,
+            "installation-02");
+
+        ActivationClientResult result = await client.TransferAsync(request);
+
+        Assert.AreEqual(ActivationClientStatus.InvalidLicense, result.Status);
+        Assert.AreEqual(LicenseValidationStatus.WrongInstallation, result.LicenseValidation!.Status);
+        Assert.IsNull(store.SavedLicense);
+    }
+
+    [TestMethod]
     public async Task DeactivateAsync_RemovesLicenseOnlyAfterValidServiceResponse()
     {
         using ECDsa key = CreateKey();

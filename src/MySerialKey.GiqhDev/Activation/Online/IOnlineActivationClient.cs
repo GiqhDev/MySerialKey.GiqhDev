@@ -18,6 +18,11 @@ public interface IOnlineActivationClient
         OnlineLicenseRenewalRequest request,
         CancellationToken cancellationToken = default);
 
+    /// <summary>Transfers a license and imports the validated target-bound license.</summary>
+    Task<ActivationClientResult> TransferAsync(
+        OnlineLicenseTransferRequest request,
+        CancellationToken cancellationToken = default);
+
     /// <summary>Deactivates an installation and removes its local license.</summary>
     Task<ActivationClientResult> DeactivateAsync(
         OnlineLicenseDeactivationRequest request,

@@ -105,6 +105,31 @@ public sealed class HttpOnlineActivationClient : IOnlineActivationClient
     }
 
     /// <inheritdoc />
+    public Task<ActivationClientResult> TransferAsync(
+        OnlineLicenseTransferRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        Guard.NotNull(request, nameof(request));
+        var wire = new OnlineLicenseTransferWireRequest
+        {
+            SchemaVersion = request.SchemaVersion,
+            OperationId = request.OperationId,
+            LicenseToken = request.LicenseToken,
+            ProductCode = request.ProductCode,
+            ApplicationVersion = request.ApplicationVersion,
+            SourceInstallationId = request.SourceInstallationId,
+            TargetInstallationId = request.TargetInstallationId
+        };
+        return ExecuteLicenseOperationAsync(
+            _options.TransferEndpoint,
+            OnlineJsonSerializer.Serialize(wire),
+            request.OperationId,
+            request.ProductCode,
+            request.TargetInstallationId,
+            cancellationToken);
+    }
+
+    /// <inheritdoc />
     public async Task<ActivationClientResult> DeactivateAsync(
         OnlineLicenseDeactivationRequest request,
         CancellationToken cancellationToken = default)

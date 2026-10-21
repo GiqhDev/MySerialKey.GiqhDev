@@ -60,6 +60,18 @@ internal sealed class OnlineLicenseWireRequest
 }
 
 [DataContract]
+internal sealed class OnlineLicenseTransferWireRequest
+{
+    [DataMember(Name = "schemaVersion", Order = 1)] public int SchemaVersion { get; set; }
+    [DataMember(Name = "operationId", Order = 2)] public string OperationId { get; set; } = string.Empty;
+    [DataMember(Name = "licenseToken", Order = 3)] public string LicenseToken { get; set; } = string.Empty;
+    [DataMember(Name = "productCode", Order = 4)] public string ProductCode { get; set; } = string.Empty;
+    [DataMember(Name = "applicationVersion", Order = 5)] public string ApplicationVersion { get; set; } = string.Empty;
+    [DataMember(Name = "sourceInstallationId", Order = 6)] public string SourceInstallationId { get; set; } = string.Empty;
+    [DataMember(Name = "targetInstallationId", Order = 7)] public string TargetInstallationId { get; set; } = string.Empty;
+}
+
+[DataContract]
 internal sealed class OnlineLicenseWireResponse
 {
     [DataMember(Name = "schemaVersion", Order = 1)] public int SchemaVersion { get; set; }

@@ -9,6 +9,7 @@ public sealed class HttpOnlineActivationClientOptions
         ActivationEndpoint = new Uri(ActivationServiceEndpoints.Activation, UriKind.Relative);
         QueryEndpoint = new Uri(ActivationServiceEndpoints.LicenseQuery, UriKind.Relative);
         RenewalEndpoint = new Uri(ActivationServiceEndpoints.Renewal, UriKind.Relative);
+        TransferEndpoint = new Uri(ActivationServiceEndpoints.Transfer, UriKind.Relative);
         DeactivationEndpoint = new Uri(ActivationServiceEndpoints.Deactivation, UriKind.Relative);
     }
 
@@ -20,6 +21,9 @@ public sealed class HttpOnlineActivationClientOptions
 
     /// <summary>Gets or sets the relative renewal endpoint.</summary>
     public Uri RenewalEndpoint { get; set; }
+
+    /// <summary>Gets or sets the relative license-transfer endpoint.</summary>
+    public Uri TransferEndpoint { get; set; }
 
     /// <summary>Gets or sets the relative deactivation endpoint.</summary>
     public Uri DeactivationEndpoint { get; set; }
@@ -38,6 +42,7 @@ public sealed class HttpOnlineActivationClientOptions
         ValidateEndpoint(ActivationEndpoint, nameof(ActivationEndpoint));
         ValidateEndpoint(QueryEndpoint, nameof(QueryEndpoint));
         ValidateEndpoint(RenewalEndpoint, nameof(RenewalEndpoint));
+        ValidateEndpoint(TransferEndpoint, nameof(TransferEndpoint));
         ValidateEndpoint(DeactivationEndpoint, nameof(DeactivationEndpoint));
         if (MaxRetries < 0 || MaxRetries > 10)
         {

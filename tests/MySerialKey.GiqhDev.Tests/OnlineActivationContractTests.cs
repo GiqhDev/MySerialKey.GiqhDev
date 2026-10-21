@@ -73,13 +73,23 @@ public sealed class OnlineActivationContractTests
             "Example.Product",
             "2.0.0",
             "installation-01");
+        var transfer = new OnlineLicenseTransferRequest(
+            license,
+            "Example.Product",
+            "2.0.0",
+            "installation-01",
+            "installation-02");
 
         Assert.AreEqual(license.ToString(), renewal.LicenseToken);
         Assert.AreEqual(license.ToString(), deactivation.LicenseToken);
         Assert.AreEqual(license.ToString(), query.LicenseToken);
+        Assert.AreEqual(license.ToString(), transfer.LicenseToken);
+        Assert.AreEqual("installation-01", transfer.SourceInstallationId);
+        Assert.AreEqual("installation-02", transfer.TargetInstallationId);
         Assert.AreEqual(1, renewal.SchemaVersion);
         Assert.AreEqual(1, deactivation.SchemaVersion);
         Assert.AreEqual(1, query.SchemaVersion);
+        Assert.AreEqual(1, transfer.SchemaVersion);
     }
 
     [TestMethod]
@@ -100,5 +110,16 @@ public sealed class OnlineActivationContractTests
             Guid.NewGuid().ToString("N"),
             " ",
             IssuedAt));
+        using ECDsa key = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+        SignedLicense license = new EcdsaLicenseSigner().Sign(
+            new LicenseClaims("license-01", "Example.Product", IssuedAt),
+            "key-01",
+            key);
+        Assert.ThrowsExactly<ArgumentException>(() => new OnlineLicenseTransferRequest(
+            license,
+            "Example.Product",
+            "2.0.0",
+            "same-installation",
+            "same-installation"));
     }
 }
