@@ -167,6 +167,61 @@ var context = new LicenseValidationContext(
 
 After `NextCheckInUtc`, validation returns `RefreshRequired`. `GracePeriod` is returned only when the consumer confirms that an online refresh was attempted but the service is unavailable, and only inside the configured grace duration. `GracePeriod` remains usable through `IsValid`; `RefreshRequired` and `Revoked` do not. An authentic revoked response from the online client is stored locally and returned as `ActivationClientStatus.Revoked`, preventing a previously active token from remaining effective. Existing signed payload schema 1 licenses remain supported.
 
+## Signed Offline Revocation Lists in 2.0
+
+An issuer can publish a short-lived `MSRL1` artifact containing revoked license identifiers. The list is signed with ES256, scoped to one product, and carries a monotonically increasing sequence number to prevent an older valid list from replacing a newer one.
+
+Issuer-side example:
+
+```csharp
+using MySerialKey.GiqhDev.Licensing.Revocation;
+
+DateTimeOffset issuedAt = DateTimeOffset.UtcNow;
+var claims = new RevocationListClaims(
+    "Example.Product",
+    sequenceNumber: 42,
+    issuedAtUtc: issuedAt,
+    expiresAtUtc: issuedAt.AddDays(7))
+{
+    RevokedLicenseIds = new[] { "license-01", "license-17" }
+};
+
+SignedRevocationList signedList =
+    new EcdsaRevocationListSigner().Sign(claims, "production-2026-01", privateKey);
+```
+
+Client-side import and use:
+
+```csharp
+using MySerialKey.GiqhDev.Licensing.Revocation;
+using MySerialKey.GiqhDev.Licensing.Revocation.Storage;
+
+var revocationStore = new ProtectedRevocationListStore(protectedStore);
+var listValidator = new EcdsaRevocationListValidator();
+var importer = new RevocationListImporter(revocationStore, listValidator);
+
+RevocationListImportResult imported = importer.Import(
+    "Example.Product",
+    SignedRevocationList.Parse(downloadedToken),
+    DateTimeOffset.UtcNow,
+    trustedKeys);
+
+RevocationListStoreReadResult stored = revocationStore.Load("Example.Product");
+RevocationListValidationResult validated = listValidator.Validate(
+    stored.List!,
+    "Example.Product",
+    DateTimeOffset.UtcNow,
+    trustedKeys);
+
+var context = new LicenseValidationContext(
+    "Example.Product",
+    DateTimeOffset.UtcNow,
+    installationId,
+    revocationList: validated.List);
+```
+
+Only a successfully validated `ValidatedRevocationList` can enter the license-validation context. The importer authenticates the existing protected list even when it has expired and requires a strictly newer sequence before replacing it. Re-importing the exact current token is idempotent. Clients contain only public verification keys; private signing keys remain outside the application.
+
 ## Protected Installation Storage in 2.0
 
 The storage contracts are product-neutral and keep installation identity, protected persistence, and signed-license persistence separate. The included Windows implementation uses DPAPI; consumers on other platforms can provide their own `IDataProtector` and `IProtectedDataStore` implementations.

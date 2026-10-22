@@ -40,6 +40,10 @@
 - Persist authentic signed revocation responses so a stale active license cannot remain locally effective.
 - Added a consumer-controlled grace policy that activates only after an unavailable online refresh.
 - Added an idempotent online transfer contract that validates the returned target installation before replacing local state.
+- Added portable `MSRL1` ES256-signed offline revocation lists scoped by product and validity window.
+- Added deterministic, bounded revocation payloads with sorted and deduplicated license identifiers.
+- Added protected revocation-list import with authenticated monotonic sequence rollback prevention.
+- Added optional offline revocation checks to the standard license-validation context without client secrets.
 - Fixed atomic temporary paths for concurrent storage on .NET Framework `MAX_PATH` environments.
 - Preserved the existing serial and HMAC APIs for legacy compatibility.
 - Made the default serial segment collection immutable.

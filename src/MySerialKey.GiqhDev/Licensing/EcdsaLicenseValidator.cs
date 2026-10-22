@@ -129,6 +129,15 @@ public sealed class EcdsaLicenseValidator : ILicenseValidator
                 claims);
         }
 
+        if (context.RevocationList is not null &&
+            context.RevocationList.Contains(claims.LicenseId))
+        {
+            return LicenseValidationResult.Failure(
+                LicenseValidationStatus.Revoked,
+                "The license appears in the authenticated offline revocation list.",
+                claims);
+        }
+
         if (claims.NextCheckInUtc.HasValue && nowUtc >= claims.NextCheckInUtc.Value)
         {
             LicenseValidationPolicy? policy = context.RefreshPolicy;

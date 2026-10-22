@@ -1,5 +1,6 @@
 using System;
 using MySerialKey.GiqhDev.Internal;
+using MySerialKey.GiqhDev.Licensing.Revocation;
 
 namespace MySerialKey.GiqhDev.Licensing;
 
@@ -15,7 +16,8 @@ public sealed class LicenseValidationContext
         string productCode,
         DateTimeOffset nowUtc,
         string? installationId = null,
-        LicenseValidationPolicy? refreshPolicy = null)
+        LicenseValidationPolicy? refreshPolicy = null,
+        ValidatedRevocationList? revocationList = null)
     {
         Guard.NotNull(productCode, nameof(productCode));
         if (string.IsNullOrWhiteSpace(productCode))
@@ -27,6 +29,19 @@ public sealed class LicenseValidationContext
         NowUtc = nowUtc;
         InstallationId = installationId;
         RefreshPolicy = refreshPolicy;
+
+        if (revocationList is not null &&
+            !string.Equals(
+                revocationList.ProductCode,
+                productCode,
+                StringComparison.Ordinal))
+        {
+            throw new ArgumentException(
+                "The revocation list belongs to another product.",
+                nameof(revocationList));
+        }
+
+        RevocationList = revocationList;
     }
 
     /// <summary>
@@ -46,4 +61,7 @@ public sealed class LicenseValidationContext
 
     /// <summary>Gets the optional consumer policy for an unavailable online refresh.</summary>
     public LicenseValidationPolicy? RefreshPolicy { get; }
+
+    /// <summary>Gets the optional authenticated offline revocation list.</summary>
+    public ValidatedRevocationList? RevocationList { get; }
 }
