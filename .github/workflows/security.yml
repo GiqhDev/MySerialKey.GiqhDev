@@ -1,0 +1,46 @@
+name: Security
+
+on:
+  push:
+    branches:
+      - dev
+      - master
+  pull_request:
+    branches:
+      - dev
+      - master
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  SOLUTION_PATH: MySerialKey.GiqhDev.slnx
+
+jobs:
+  verify:
+    name: Analyze, audit and test
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore and audit dependencies
+        run: dotnet restore $env:SOLUTION_PATH
+
+      - name: Build with analyzers
+        run: dotnet build $env:SOLUTION_PATH -c Release --no-restore
+
+      - name: Test hardened parsers and supported targets
+        run: dotnet test $env:SOLUTION_PATH -c Release --no-build --verbosity normal
+
+      - name: Report vulnerable dependencies
+        run: dotnet list $env:SOLUTION_PATH package --vulnerable --include-transitive

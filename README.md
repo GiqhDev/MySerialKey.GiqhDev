@@ -432,6 +432,10 @@ A local administrator can delete protected trial state, replace application bina
 
 DPAPI machine scope protects data for the computer but does not decide which local users may modify the file. Use a restrictive directory ACL for shared storage and grant access only to the identities that run the application.
 
+MySerialKey does not log tokens, serials, secrets, claims, HTTP bodies, or protected values. Consuming applications should preserve that boundary and log only minimal operation identifiers, typed statuses, stable error codes, schema versions, and non-secret `keyId` values. The console sample generates its legacy HMAC secret at runtime, clears it after use, and never prints generated serial values.
+
+Repository builds enable current .NET analyzers and code-style checks. NuGet advisories `NU1901` through `NU1904` are treated as errors, and the security workflow runs restore/audit, Release build, and tests on pushes, pull requests, weekly schedule, and manual execution.
+
 ## Compatibility
 
 The package targets:
@@ -465,7 +469,10 @@ The workflow runs on pushes to `master` and can also be started manually from th
 - v2.0 alpha: protected installation identity and signed-license persistence.
 - v2.0 alpha: configurable protected trial state.
 - v2.0 alpha: signed offline activation requests and responses.
-- v2.0 next: online activation-service contracts.
+- v2.0 alpha: online activation-service contracts, refresh, transfer, and deactivation.
+- v2.0 alpha: signed offline revocation lists with protected rollback prevention.
+- v2.0 alpha: threat-model documentation, dependency auditing, analyzers, and parser fuzzing.
+- v2.0 next: public API, packaging, and compatibility review before beta.
 
 ## License
 

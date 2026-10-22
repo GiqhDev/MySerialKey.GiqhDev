@@ -44,6 +44,9 @@
 - Added deterministic, bounded revocation payloads with sorted and deduplicated license identifiers.
 - Added protected revocation-list import with authenticated monotonic sequence rollback prevention.
 - Added optional offline revocation checks to the standard license-validation context without client secrets.
+- Enabled explicit current .NET analyzers, code-style enforcement, and NuGet vulnerability auditing with security advisories treated as build errors.
+- Added scheduled security CI, Dependabot coverage, and deterministic fuzz tests for all public portable-token parsers.
+- Removed serial values and fixed sample secrets from console output and source examples.
 - Fixed atomic temporary paths for concurrent storage on .NET Framework `MAX_PATH` environments.
 - Preserved the existing serial and HMAC APIs for legacy compatibility.
 - Made the default serial segment collection immutable.
