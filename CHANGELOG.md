@@ -46,6 +46,11 @@
 - Added optional offline revocation checks to the standard license-validation context without client secrets.
 - Enabled explicit current .NET analyzers, code-style enforcement, and NuGet vulnerability auditing with security advisories treated as build errors.
 - Added scheduled security CI, Dependabot coverage, and deterministic fuzz tests for all public portable-token parsers.
+- Added a checked public API baseline and analyzer enforcement for incompatible surface changes.
+- Added `IRevocationListValidator` to make signing and validation abstractions consistent.
+- Added separate generic issuer and client samples with an explicit private/public key boundary.
+- Added CI coverage that packs the library, restores a clean consumer from the generated NuGet package, and executes signed-license validation.
+- Documented the 2.0 package layout, target-framework policy, 1.x migration, and obsolescence strategy.
 - Removed serial values and fixed sample secrets from console output and source examples.
 - Fixed atomic temporary paths for concurrent storage on .NET Framework `MAX_PATH` environments.
 - Preserved the existing serial and HMAC APIs for legacy compatibility.

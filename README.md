@@ -436,6 +436,17 @@ MySerialKey does not log tokens, serials, secrets, claims, HTTP bodies, or prote
 
 Repository builds enable current .NET analyzers and code-style checks. NuGet advisories `NU1901` through `NU1904` are treated as errors, and the security workflow runs restore/audit, Release build, and tests on pushes, pull requests, weekly schedule, and manual execution.
 
+## Complete Issuer and Client Examples
+
+The repository keeps issuance and validation in separate applications so the private key boundary is explicit:
+
+```bash
+dotnet run --project samples/MySerialKey.GiqhDev.IssuerSample -- artifacts/example-license
+dotnet run --project samples/MySerialKey.GiqhDev.ClientSample -- artifacts/example-license/public-key.spki artifacts/example-license/license.msl
+```
+
+The issuer creates a temporary P-256 key for demonstration, writes only its public key and the signed license, and does not persist the private key. A production issuer must load its private key from a protected administrative environment, HSM, or managed key service. The client imports only the public key and reports the typed validation status.
+
 ## Compatibility
 
 The package targets:
@@ -446,6 +457,12 @@ The package targets:
 - .NET 8
 - .NET 9
 - .NET 10
+
+Version 2.0 keeps these direct targets to preserve the compatibility already exercised by the alpha. The .NET 6, 7, and 9 targets are compatibility targets; applications should still run on a Microsoft-supported runtime. `netstandard2.0` is intentionally not advertised because it would hide platform and cryptographic requirements behind a broader target than the implementation actually guarantees.
+
+The 2.0 release remains a single NuGet package. Issuance, validation, storage, and platform concerns are separated by namespaces and interfaces, while a physical package split is deferred until it provides a concrete dependency or deployment boundary.
+
+Applications migrating from 1.x can update the package without replacing their serial or HMAC flows. Signed licenses are opt-in: add an immutable product code, provision one or more public verification keys, choose protected storage, and map typed validation statuses to application policy. Existing HMAC serials are not automatically converted into signed licenses, and the legacy APIs are not obsolete in 2.0.
 
 ## Publishing
 
@@ -472,7 +489,8 @@ The workflow runs on pushes to `master` and can also be started manually from th
 - v2.0 alpha: online activation-service contracts, refresh, transfer, and deactivation.
 - v2.0 alpha: signed offline revocation lists with protected rollback prevention.
 - v2.0 alpha: threat-model documentation, dependency auditing, analyzers, and parser fuzzing.
-- v2.0 next: public API, packaging, and compatibility review before beta.
+- v2.0 alpha: public API baseline, separate issuer/client samples, package-consumer validation, and documented compatibility policy.
+- v2.0 next: close remaining acceptance criteria and prepare the beta.
 
 ## License
 

@@ -1,0 +1,519 @@
+#nullable enable
+const MySerialKey.GiqhDev.Activation.Online.ActivationContractVersions.Current = 1 -> int
+const MySerialKey.GiqhDev.Activation.Online.ActivationServiceEndpoints.Activation = "api/v1/activations" -> string!
+const MySerialKey.GiqhDev.Activation.Online.ActivationServiceEndpoints.Deactivation = "api/v1/activations/deactivations" -> string!
+const MySerialKey.GiqhDev.Activation.Online.ActivationServiceEndpoints.LicenseQuery = "api/v1/activations/query" -> string!
+const MySerialKey.GiqhDev.Activation.Online.ActivationServiceEndpoints.Renewal = "api/v1/activations/renewals" -> string!
+const MySerialKey.GiqhDev.Activation.Online.ActivationServiceEndpoints.Transfer = "api/v1/activations/transfers" -> string!
+const MySerialKey.GiqhDev.Activation.Online.ActivationServiceEndpoints.TrustedTime = "api/v1/time" -> string!
+const MySerialKey.GiqhDev.Formatting.SerialKeyDefaults.DefaultAlphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789" -> string!
+const MySerialKey.GiqhDev.Formatting.SerialKeyDefaults.DefaultSeparator = '-' -> char
+const MySerialKey.GiqhDev.Licensing.LicenseAlgorithms.EcdsaP256Sha256 = "ES256" -> string!
+MySerialKey.GiqhDev.Activation.Offline.ActivationRequest
+MySerialKey.GiqhDev.Activation.Offline.ActivationRequest.ApplicationVersion.get -> string?
+MySerialKey.GiqhDev.Activation.Offline.ActivationRequest.CreatedAtUtc.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Activation.Offline.ActivationRequest.ExpiresAtUtc.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Activation.Offline.ActivationRequest.Format.get -> string!
+MySerialKey.GiqhDev.Activation.Offline.ActivationRequest.InstallationId.get -> string!
+MySerialKey.GiqhDev.Activation.Offline.ActivationRequest.Nonce.get -> byte[]!
+MySerialKey.GiqhDev.Activation.Offline.ActivationRequest.ProductCode.get -> string!
+MySerialKey.GiqhDev.Activation.Offline.ActivationRequest.RequestId.get -> string!
+MySerialKey.GiqhDev.Activation.Offline.ActivationRequest.Save(string! path) -> void
+MySerialKey.GiqhDev.Activation.Offline.ActivationResponse
+MySerialKey.GiqhDev.Activation.Offline.ActivationResponse.Algorithm.get -> string!
+MySerialKey.GiqhDev.Activation.Offline.ActivationResponse.ExpiresAtUtc.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Activation.Offline.ActivationResponse.Format.get -> string!
+MySerialKey.GiqhDev.Activation.Offline.ActivationResponse.InstallationId.get -> string!
+MySerialKey.GiqhDev.Activation.Offline.ActivationResponse.IssuedAtUtc.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Activation.Offline.ActivationResponse.KeyId.get -> string!
+MySerialKey.GiqhDev.Activation.Offline.ActivationResponse.License.get -> MySerialKey.GiqhDev.Licensing.SignedLicense!
+MySerialKey.GiqhDev.Activation.Offline.ActivationResponse.ProductCode.get -> string!
+MySerialKey.GiqhDev.Activation.Offline.ActivationResponse.RequestId.get -> string!
+MySerialKey.GiqhDev.Activation.Offline.ActivationResponse.RequestNonceHash.get -> byte[]!
+MySerialKey.GiqhDev.Activation.Offline.ActivationResponse.Save(string! path) -> void
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationClient
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationClient.Import(MySerialKey.GiqhDev.Activation.Offline.ActivationRequest! request, MySerialKey.GiqhDev.Activation.Offline.ActivationResponse! response, System.DateTimeOffset nowUtc, System.Collections.Generic.IReadOnlyCollection<MySerialKey.GiqhDev.Licensing.LicenseVerificationKey!>! trustedKeys) -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportResult!
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationClient.Import(string! requestToken, string! responseToken, System.DateTimeOffset nowUtc, System.Collections.Generic.IReadOnlyCollection<MySerialKey.GiqhDev.Licensing.LicenseVerificationKey!>! trustedKeys) -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportResult!
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationClient.OfflineActivationClient(string! productCode, string! installationId, MySerialKey.GiqhDev.Licensing.Storage.ILicenseStore! licenseStore, MySerialKey.GiqhDev.Storage.IProtectedDataStore! stateStore) -> void
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportResult
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportResult.IsSuccess.get -> bool
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportResult.License.get -> MySerialKey.GiqhDev.Licensing.SignedLicense?
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportResult.LicenseValidation.get -> MySerialKey.GiqhDev.Licensing.LicenseValidationResult?
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportResult.Message.get -> string?
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportResult.Status.get -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus.Applied = 0 -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus.InvalidLicense = 13 -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus.InvalidRequest = 1 -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus.InvalidResponse = 2 -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus.InvalidSignature = 7 -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus.ReplayDetected = 14 -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus.RequestExpired = 4 -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus.RequestNotYetValid = 3 -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus.ResponseExpired = 9 -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus.ResponseNotYetValid = 8 -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus.StorageUnavailable = 15 -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus.UnknownSigningKey = 6 -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus.UnsupportedAlgorithm = 5 -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus.WrongInstallation = 12 -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus.WrongProduct = 11 -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus.WrongRequest = 10 -> MySerialKey.GiqhDev.Activation.Offline.OfflineActivationImportStatus
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationIssuer
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationIssuer.Issue(MySerialKey.GiqhDev.Activation.Offline.ActivationRequest! request, MySerialKey.GiqhDev.Licensing.LicenseClaims! licenseClaims, string! keyId, System.Security.Cryptography.ECDsa! privateKey, System.DateTimeOffset nowUtc, System.TimeSpan? responseValidity = null) -> MySerialKey.GiqhDev.Activation.Offline.ActivationResponse!
+MySerialKey.GiqhDev.Activation.Offline.OfflineActivationIssuer.OfflineActivationIssuer() -> void
+MySerialKey.GiqhDev.Activation.Online.ActivationClientResult
+MySerialKey.GiqhDev.Activation.Online.ActivationClientResult.ActivationClientResult(MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus status, string! operationId, MySerialKey.GiqhDev.Licensing.SignedLicense? license = null, MySerialKey.GiqhDev.Licensing.LicenseValidationResult? licenseValidation = null, string? errorCode = null, string? message = null, System.TimeSpan? retryAfter = null) -> void
+MySerialKey.GiqhDev.Activation.Online.ActivationClientResult.ErrorCode.get -> string?
+MySerialKey.GiqhDev.Activation.Online.ActivationClientResult.IsSuccess.get -> bool
+MySerialKey.GiqhDev.Activation.Online.ActivationClientResult.License.get -> MySerialKey.GiqhDev.Licensing.SignedLicense?
+MySerialKey.GiqhDev.Activation.Online.ActivationClientResult.LicenseValidation.get -> MySerialKey.GiqhDev.Licensing.LicenseValidationResult?
+MySerialKey.GiqhDev.Activation.Online.ActivationClientResult.Message.get -> string?
+MySerialKey.GiqhDev.Activation.Online.ActivationClientResult.OperationId.get -> string!
+MySerialKey.GiqhDev.Activation.Online.ActivationClientResult.RetryAfter.get -> System.TimeSpan?
+MySerialKey.GiqhDev.Activation.Online.ActivationClientResult.Status.get -> MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus
+MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus
+MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus.InvalidLicense = 7 -> MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus
+MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus.InvalidResponse = 6 -> MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus
+MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus.NetworkUnavailable = 1 -> MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus
+MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus.RateLimited = 4 -> MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus
+MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus.Revoked = 8 -> MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus
+MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus.ServiceRejected = 5 -> MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus
+MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus.StorageUnavailable = 9 -> MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus
+MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus.Success = 0 -> MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus
+MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus.Timeout = 2 -> MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus
+MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus.Unauthorized = 3 -> MySerialKey.GiqhDev.Activation.Online.ActivationClientStatus
+MySerialKey.GiqhDev.Activation.Online.ActivationContractVersions
+MySerialKey.GiqhDev.Activation.Online.ActivationServiceEndpoints
+MySerialKey.GiqhDev.Activation.Online.ActivationServiceError
+MySerialKey.GiqhDev.Activation.Online.ActivationServiceError.ActivationServiceError(string! operationId, string! errorCode, string! message, bool retryable, System.TimeSpan? retryAfter = null, int schemaVersion = 1) -> void
+MySerialKey.GiqhDev.Activation.Online.ActivationServiceError.ErrorCode.get -> string!
+MySerialKey.GiqhDev.Activation.Online.ActivationServiceError.Message.get -> string!
+MySerialKey.GiqhDev.Activation.Online.ActivationServiceError.OperationId.get -> string!
+MySerialKey.GiqhDev.Activation.Online.ActivationServiceError.Retryable.get -> bool
+MySerialKey.GiqhDev.Activation.Online.ActivationServiceError.RetryAfter.get -> System.TimeSpan?
+MySerialKey.GiqhDev.Activation.Online.ActivationServiceError.SchemaVersion.get -> int
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClient
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClient.ActivateAsync(MySerialKey.GiqhDev.Activation.Online.OnlineActivationRequest! request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MySerialKey.GiqhDev.Activation.Online.ActivationClientResult!>!
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClient.DeactivateAsync(MySerialKey.GiqhDev.Activation.Online.OnlineLicenseDeactivationRequest! request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MySerialKey.GiqhDev.Activation.Online.ActivationClientResult!>!
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClient.HttpOnlineActivationClient(System.Net.Http.HttpClient! httpClient, MySerialKey.GiqhDev.Licensing.Storage.ILicenseStore! licenseStore, System.Collections.Generic.IReadOnlyCollection<MySerialKey.GiqhDev.Licensing.LicenseVerificationKey!>! trustedKeys, MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions? options = null, System.Func<System.DateTimeOffset>? utcNow = null) -> void
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClient.QueryAsync(MySerialKey.GiqhDev.Activation.Online.OnlineLicenseQueryRequest! request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MySerialKey.GiqhDev.Activation.Online.ActivationClientResult!>!
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClient.RenewAsync(MySerialKey.GiqhDev.Activation.Online.OnlineLicenseRenewalRequest! request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MySerialKey.GiqhDev.Activation.Online.ActivationClientResult!>!
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClient.TransferAsync(MySerialKey.GiqhDev.Activation.Online.OnlineLicenseTransferRequest! request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MySerialKey.GiqhDev.Activation.Online.ActivationClientResult!>!
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions.ActivationEndpoint.get -> System.Uri!
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions.ActivationEndpoint.set -> void
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions.DeactivationEndpoint.get -> System.Uri!
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions.DeactivationEndpoint.set -> void
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions.HttpOnlineActivationClientOptions() -> void
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions.MaximumResponseBytes.get -> int
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions.MaximumResponseBytes.set -> void
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions.MaxRetries.get -> int
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions.MaxRetries.set -> void
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions.QueryEndpoint.get -> System.Uri!
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions.QueryEndpoint.set -> void
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions.RenewalEndpoint.get -> System.Uri!
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions.RenewalEndpoint.set -> void
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions.RetryDelay.get -> System.TimeSpan
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions.RetryDelay.set -> void
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions.TransferEndpoint.get -> System.Uri!
+MySerialKey.GiqhDev.Activation.Online.HttpOnlineActivationClientOptions.TransferEndpoint.set -> void
+MySerialKey.GiqhDev.Activation.Online.IOnlineActivationClient
+MySerialKey.GiqhDev.Activation.Online.IOnlineActivationClient.ActivateAsync(MySerialKey.GiqhDev.Activation.Online.OnlineActivationRequest! request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MySerialKey.GiqhDev.Activation.Online.ActivationClientResult!>!
+MySerialKey.GiqhDev.Activation.Online.IOnlineActivationClient.DeactivateAsync(MySerialKey.GiqhDev.Activation.Online.OnlineLicenseDeactivationRequest! request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MySerialKey.GiqhDev.Activation.Online.ActivationClientResult!>!
+MySerialKey.GiqhDev.Activation.Online.IOnlineActivationClient.QueryAsync(MySerialKey.GiqhDev.Activation.Online.OnlineLicenseQueryRequest! request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MySerialKey.GiqhDev.Activation.Online.ActivationClientResult!>!
+MySerialKey.GiqhDev.Activation.Online.IOnlineActivationClient.RenewAsync(MySerialKey.GiqhDev.Activation.Online.OnlineLicenseRenewalRequest! request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MySerialKey.GiqhDev.Activation.Online.ActivationClientResult!>!
+MySerialKey.GiqhDev.Activation.Online.IOnlineActivationClient.TransferAsync(MySerialKey.GiqhDev.Activation.Online.OnlineLicenseTransferRequest! request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MySerialKey.GiqhDev.Activation.Online.ActivationClientResult!>!
+MySerialKey.GiqhDev.Activation.Online.OnlineActivationRequest
+MySerialKey.GiqhDev.Activation.Online.OnlineActivationRequest.ApplicationVersion.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineActivationRequest.InstallationId.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineActivationRequest.OnlineActivationRequest(string! serial, string! productCode, string! applicationVersion, string! installationId, string? operationId = null) -> void
+MySerialKey.GiqhDev.Activation.Online.OnlineActivationRequest.OperationId.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineActivationRequest.ProductCode.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineActivationRequest.SchemaVersion.get -> int
+MySerialKey.GiqhDev.Activation.Online.OnlineActivationRequest.Serial.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineActivationResponse
+MySerialKey.GiqhDev.Activation.Online.OnlineActivationResponse.LicenseToken.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineActivationResponse.OnlineActivationResponse(string! operationId, string! licenseToken, System.DateTimeOffset trustedTimeUtc, int schemaVersion = 1) -> void
+MySerialKey.GiqhDev.Activation.Online.OnlineActivationResponse.OperationId.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineActivationResponse.SchemaVersion.get -> int
+MySerialKey.GiqhDev.Activation.Online.OnlineActivationResponse.TrustedTimeUtc.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Activation.Online.OnlineDeactivationResponse
+MySerialKey.GiqhDev.Activation.Online.OnlineDeactivationResponse.OnlineDeactivationResponse(string! operationId, System.DateTimeOffset trustedTimeUtc, int schemaVersion = 1) -> void
+MySerialKey.GiqhDev.Activation.Online.OnlineDeactivationResponse.OperationId.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineDeactivationResponse.SchemaVersion.get -> int
+MySerialKey.GiqhDev.Activation.Online.OnlineDeactivationResponse.TrustedTimeUtc.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseDeactivationRequest
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseDeactivationRequest.ApplicationVersion.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseDeactivationRequest.InstallationId.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseDeactivationRequest.LicenseToken.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseDeactivationRequest.OnlineLicenseDeactivationRequest(MySerialKey.GiqhDev.Licensing.SignedLicense! currentLicense, string! productCode, string! applicationVersion, string! installationId, string? operationId = null) -> void
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseDeactivationRequest.OperationId.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseDeactivationRequest.ProductCode.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseDeactivationRequest.SchemaVersion.get -> int
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseQueryRequest
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseQueryRequest.ApplicationVersion.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseQueryRequest.InstallationId.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseQueryRequest.LicenseToken.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseQueryRequest.OnlineLicenseQueryRequest(MySerialKey.GiqhDev.Licensing.SignedLicense! currentLicense, string! productCode, string! applicationVersion, string! installationId, string? operationId = null) -> void
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseQueryRequest.OperationId.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseQueryRequest.ProductCode.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseQueryRequest.SchemaVersion.get -> int
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseRenewalRequest
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseRenewalRequest.ApplicationVersion.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseRenewalRequest.InstallationId.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseRenewalRequest.LicenseToken.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseRenewalRequest.OnlineLicenseRenewalRequest(MySerialKey.GiqhDev.Licensing.SignedLicense! currentLicense, string! productCode, string! applicationVersion, string! installationId, string? operationId = null) -> void
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseRenewalRequest.OperationId.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseRenewalRequest.ProductCode.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseRenewalRequest.SchemaVersion.get -> int
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseTransferRequest
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseTransferRequest.ApplicationVersion.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseTransferRequest.LicenseToken.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseTransferRequest.OnlineLicenseTransferRequest(MySerialKey.GiqhDev.Licensing.SignedLicense! currentLicense, string! productCode, string! applicationVersion, string! sourceInstallationId, string! targetInstallationId, string? operationId = null) -> void
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseTransferRequest.OperationId.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseTransferRequest.ProductCode.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseTransferRequest.SchemaVersion.get -> int
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseTransferRequest.SourceInstallationId.get -> string!
+MySerialKey.GiqhDev.Activation.Online.OnlineLicenseTransferRequest.TargetInstallationId.get -> string!
+MySerialKey.GiqhDev.Formatting.SerialFormatVersion
+MySerialKey.GiqhDev.Formatting.SerialFormatVersion.V1 = 1 -> MySerialKey.GiqhDev.Formatting.SerialFormatVersion
+MySerialKey.GiqhDev.Formatting.SerialKeyDefaults
+MySerialKey.GiqhDev.Formatting.SerialKeyFormatter
+MySerialKey.GiqhDev.Formatting.SerialKeyNormalizer
+MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions
+MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions.Alphabet.get -> string!
+MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions.Alphabet.set -> void
+MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions.FormatVersion.get -> MySerialKey.GiqhDev.Formatting.SerialFormatVersion
+MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions.FormatVersion.set -> void
+MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions.Segments.get -> System.Collections.Generic.IReadOnlyList<int>!
+MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions.Segments.set -> void
+MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions.Separator.get -> char
+MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions.Separator.set -> void
+MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions.SerialKeyGenerationOptions() -> void
+MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions.UseUppercase.get -> bool
+MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions.UseUppercase.set -> void
+MySerialKey.GiqhDev.Generation.SerialKeyGenerator
+MySerialKey.GiqhDev.Installation.IInstallationIdProvider
+MySerialKey.GiqhDev.Installation.IInstallationIdProvider.GetOrCreate(string! productCode) -> string!
+MySerialKey.GiqhDev.Installation.InstallationIdException
+MySerialKey.GiqhDev.Installation.InstallationIdException.InstallationIdException(string! message) -> void
+MySerialKey.GiqhDev.Installation.PersistentInstallationIdProvider
+MySerialKey.GiqhDev.Installation.PersistentInstallationIdProvider.GetOrCreate(string! productCode) -> string!
+MySerialKey.GiqhDev.Installation.PersistentInstallationIdProvider.PersistentInstallationIdProvider(MySerialKey.GiqhDev.Storage.IProtectedDataStore! store) -> void
+MySerialKey.GiqhDev.Licensing.EcdsaLicenseValidator
+MySerialKey.GiqhDev.Licensing.EcdsaLicenseValidator.EcdsaLicenseValidator() -> void
+MySerialKey.GiqhDev.Licensing.EcdsaLicenseValidator.Validate(MySerialKey.GiqhDev.Licensing.SignedLicense! license, MySerialKey.GiqhDev.Licensing.LicenseValidationContext! context, System.Collections.Generic.IReadOnlyCollection<MySerialKey.GiqhDev.Licensing.LicenseVerificationKey!>! trustedKeys) -> MySerialKey.GiqhDev.Licensing.LicenseValidationResult!
+MySerialKey.GiqhDev.Licensing.ILicenseSigner
+MySerialKey.GiqhDev.Licensing.ILicenseSigner.Sign(MySerialKey.GiqhDev.Licensing.LicenseClaims! claims, string! keyId, System.Security.Cryptography.ECDsa! privateKey) -> MySerialKey.GiqhDev.Licensing.SignedLicense!
+MySerialKey.GiqhDev.Licensing.ILicenseValidator
+MySerialKey.GiqhDev.Licensing.ILicenseValidator.Validate(MySerialKey.GiqhDev.Licensing.SignedLicense! license, MySerialKey.GiqhDev.Licensing.LicenseValidationContext! context, System.Collections.Generic.IReadOnlyCollection<MySerialKey.GiqhDev.Licensing.LicenseVerificationKey!>! trustedKeys) -> MySerialKey.GiqhDev.Licensing.LicenseValidationResult!
+MySerialKey.GiqhDev.Licensing.LicenseAlgorithms
+MySerialKey.GiqhDev.Licensing.LicenseClaims
+MySerialKey.GiqhDev.Licensing.LicenseClaims.CustomerId.get -> string?
+MySerialKey.GiqhDev.Licensing.LicenseClaims.CustomerId.set -> void
+MySerialKey.GiqhDev.Licensing.LicenseClaims.Edition.get -> string?
+MySerialKey.GiqhDev.Licensing.LicenseClaims.Edition.set -> void
+MySerialKey.GiqhDev.Licensing.LicenseClaims.EntitlementStatus.get -> MySerialKey.GiqhDev.Licensing.LicenseEntitlementStatus
+MySerialKey.GiqhDev.Licensing.LicenseClaims.EntitlementStatus.set -> void
+MySerialKey.GiqhDev.Licensing.LicenseClaims.ExpiresAtUtc.get -> System.DateTimeOffset?
+MySerialKey.GiqhDev.Licensing.LicenseClaims.ExpiresAtUtc.set -> void
+MySerialKey.GiqhDev.Licensing.LicenseClaims.Features.get -> System.Collections.Generic.IReadOnlyList<string!>!
+MySerialKey.GiqhDev.Licensing.LicenseClaims.Features.set -> void
+MySerialKey.GiqhDev.Licensing.LicenseClaims.InstallationId.get -> string?
+MySerialKey.GiqhDev.Licensing.LicenseClaims.InstallationId.set -> void
+MySerialKey.GiqhDev.Licensing.LicenseClaims.IssuedAtUtc.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Licensing.LicenseClaims.IssuedAtUtc.set -> void
+MySerialKey.GiqhDev.Licensing.LicenseClaims.LicenseClaims(string! licenseId, string! productCode, System.DateTimeOffset issuedAtUtc) -> void
+MySerialKey.GiqhDev.Licensing.LicenseClaims.LicenseId.get -> string!
+MySerialKey.GiqhDev.Licensing.LicenseClaims.LicenseId.set -> void
+MySerialKey.GiqhDev.Licensing.LicenseClaims.MaxTerminals.get -> int
+MySerialKey.GiqhDev.Licensing.LicenseClaims.MaxTerminals.set -> void
+MySerialKey.GiqhDev.Licensing.LicenseClaims.NextCheckInUtc.get -> System.DateTimeOffset?
+MySerialKey.GiqhDev.Licensing.LicenseClaims.NextCheckInUtc.set -> void
+MySerialKey.GiqhDev.Licensing.LicenseClaims.NotBeforeUtc.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Licensing.LicenseClaims.NotBeforeUtc.set -> void
+MySerialKey.GiqhDev.Licensing.LicenseClaims.ProductCode.get -> string!
+MySerialKey.GiqhDev.Licensing.LicenseClaims.ProductCode.set -> void
+MySerialKey.GiqhDev.Licensing.LicenseClaims.SchemaVersion.get -> int
+MySerialKey.GiqhDev.Licensing.LicenseClaims.SchemaVersion.set -> void
+MySerialKey.GiqhDev.Licensing.LicenseEntitlementStatus
+MySerialKey.GiqhDev.Licensing.LicenseEntitlementStatus.Active = 0 -> MySerialKey.GiqhDev.Licensing.LicenseEntitlementStatus
+MySerialKey.GiqhDev.Licensing.LicenseEntitlementStatus.Revoked = 1 -> MySerialKey.GiqhDev.Licensing.LicenseEntitlementStatus
+MySerialKey.GiqhDev.Licensing.LicenseValidationContext
+MySerialKey.GiqhDev.Licensing.LicenseValidationContext.InstallationId.get -> string?
+MySerialKey.GiqhDev.Licensing.LicenseValidationContext.LicenseValidationContext(string! productCode, System.DateTimeOffset nowUtc, string? installationId = null, MySerialKey.GiqhDev.Licensing.LicenseValidationPolicy? refreshPolicy = null, MySerialKey.GiqhDev.Licensing.Revocation.ValidatedRevocationList? revocationList = null) -> void
+MySerialKey.GiqhDev.Licensing.LicenseValidationContext.NowUtc.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Licensing.LicenseValidationContext.ProductCode.get -> string!
+MySerialKey.GiqhDev.Licensing.LicenseValidationContext.RefreshPolicy.get -> MySerialKey.GiqhDev.Licensing.LicenseValidationPolicy?
+MySerialKey.GiqhDev.Licensing.LicenseValidationContext.RevocationList.get -> MySerialKey.GiqhDev.Licensing.Revocation.ValidatedRevocationList?
+MySerialKey.GiqhDev.Licensing.LicenseValidationPolicy
+MySerialKey.GiqhDev.Licensing.LicenseValidationPolicy.GracePeriod.get -> System.TimeSpan
+MySerialKey.GiqhDev.Licensing.LicenseValidationPolicy.IsOnlineRefreshUnavailable.get -> bool
+MySerialKey.GiqhDev.Licensing.LicenseValidationPolicy.LicenseValidationPolicy(System.TimeSpan gracePeriod, bool isOnlineRefreshUnavailable = false) -> void
+MySerialKey.GiqhDev.Licensing.LicenseValidationResult
+MySerialKey.GiqhDev.Licensing.LicenseValidationResult.Claims.get -> MySerialKey.GiqhDev.Licensing.LicenseClaims?
+MySerialKey.GiqhDev.Licensing.LicenseValidationResult.IsValid.get -> bool
+MySerialKey.GiqhDev.Licensing.LicenseValidationResult.Message.get -> string?
+MySerialKey.GiqhDev.Licensing.LicenseValidationResult.Status.get -> MySerialKey.GiqhDev.Licensing.LicenseValidationStatus
+MySerialKey.GiqhDev.Licensing.LicenseValidationStatus
+MySerialKey.GiqhDev.Licensing.LicenseValidationStatus.Corrupted = 5 -> MySerialKey.GiqhDev.Licensing.LicenseValidationStatus
+MySerialKey.GiqhDev.Licensing.LicenseValidationStatus.Expired = 8 -> MySerialKey.GiqhDev.Licensing.LicenseValidationStatus
+MySerialKey.GiqhDev.Licensing.LicenseValidationStatus.GracePeriod = 12 -> MySerialKey.GiqhDev.Licensing.LicenseValidationStatus
+MySerialKey.GiqhDev.Licensing.LicenseValidationStatus.InvalidEnvelope = 1 -> MySerialKey.GiqhDev.Licensing.LicenseValidationStatus
+MySerialKey.GiqhDev.Licensing.LicenseValidationStatus.InvalidSignature = 4 -> MySerialKey.GiqhDev.Licensing.LicenseValidationStatus
+MySerialKey.GiqhDev.Licensing.LicenseValidationStatus.NotYetValid = 7 -> MySerialKey.GiqhDev.Licensing.LicenseValidationStatus
+MySerialKey.GiqhDev.Licensing.LicenseValidationStatus.RefreshRequired = 11 -> MySerialKey.GiqhDev.Licensing.LicenseValidationStatus
+MySerialKey.GiqhDev.Licensing.LicenseValidationStatus.Revoked = 13 -> MySerialKey.GiqhDev.Licensing.LicenseValidationStatus
+MySerialKey.GiqhDev.Licensing.LicenseValidationStatus.UnknownSigningKey = 3 -> MySerialKey.GiqhDev.Licensing.LicenseValidationStatus
+MySerialKey.GiqhDev.Licensing.LicenseValidationStatus.UnsupportedAlgorithm = 2 -> MySerialKey.GiqhDev.Licensing.LicenseValidationStatus
+MySerialKey.GiqhDev.Licensing.LicenseValidationStatus.UnsupportedSchema = 6 -> MySerialKey.GiqhDev.Licensing.LicenseValidationStatus
+MySerialKey.GiqhDev.Licensing.LicenseValidationStatus.Valid = 0 -> MySerialKey.GiqhDev.Licensing.LicenseValidationStatus
+MySerialKey.GiqhDev.Licensing.LicenseValidationStatus.WrongInstallation = 10 -> MySerialKey.GiqhDev.Licensing.LicenseValidationStatus
+MySerialKey.GiqhDev.Licensing.LicenseValidationStatus.WrongProduct = 9 -> MySerialKey.GiqhDev.Licensing.LicenseValidationStatus
+MySerialKey.GiqhDev.Licensing.LicenseVerificationKey
+MySerialKey.GiqhDev.Licensing.LicenseVerificationKey.Algorithm.get -> string!
+MySerialKey.GiqhDev.Licensing.LicenseVerificationKey.KeyId.get -> string!
+MySerialKey.GiqhDev.Licensing.LicenseVerificationKey.LicenseVerificationKey(string! keyId, System.Security.Cryptography.ECDsa! publicKey) -> void
+MySerialKey.GiqhDev.Licensing.Revocation.EcdsaRevocationListSigner
+MySerialKey.GiqhDev.Licensing.Revocation.EcdsaRevocationListSigner.EcdsaRevocationListSigner() -> void
+MySerialKey.GiqhDev.Licensing.Revocation.EcdsaRevocationListSigner.Sign(MySerialKey.GiqhDev.Licensing.Revocation.RevocationListClaims! claims, string! keyId, System.Security.Cryptography.ECDsa! privateKey) -> MySerialKey.GiqhDev.Licensing.Revocation.SignedRevocationList!
+MySerialKey.GiqhDev.Licensing.Revocation.EcdsaRevocationListValidator
+MySerialKey.GiqhDev.Licensing.Revocation.EcdsaRevocationListValidator.EcdsaRevocationListValidator() -> void
+MySerialKey.GiqhDev.Licensing.Revocation.EcdsaRevocationListValidator.Validate(MySerialKey.GiqhDev.Licensing.Revocation.SignedRevocationList! list, string! productCode, System.DateTimeOffset nowUtc, System.Collections.Generic.IReadOnlyCollection<MySerialKey.GiqhDev.Licensing.LicenseVerificationKey!>! trustedKeys, long? minimumSequenceNumber = null) -> MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationResult!
+MySerialKey.GiqhDev.Licensing.Revocation.IRevocationListSigner
+MySerialKey.GiqhDev.Licensing.Revocation.IRevocationListSigner.Sign(MySerialKey.GiqhDev.Licensing.Revocation.RevocationListClaims! claims, string! keyId, System.Security.Cryptography.ECDsa! privateKey) -> MySerialKey.GiqhDev.Licensing.Revocation.SignedRevocationList!
+MySerialKey.GiqhDev.Licensing.Revocation.IRevocationListValidator
+MySerialKey.GiqhDev.Licensing.Revocation.IRevocationListValidator.Validate(MySerialKey.GiqhDev.Licensing.Revocation.SignedRevocationList! list, string! productCode, System.DateTimeOffset nowUtc, System.Collections.Generic.IReadOnlyCollection<MySerialKey.GiqhDev.Licensing.LicenseVerificationKey!>! trustedKeys, long? minimumSequenceNumber = null) -> MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationResult!
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListClaims
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListClaims.ExpiresAtUtc.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListClaims.ExpiresAtUtc.set -> void
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListClaims.IssuedAtUtc.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListClaims.IssuedAtUtc.set -> void
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListClaims.ProductCode.get -> string!
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListClaims.ProductCode.set -> void
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListClaims.RevocationListClaims(string! productCode, long sequenceNumber, System.DateTimeOffset issuedAtUtc, System.DateTimeOffset expiresAtUtc) -> void
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListClaims.RevokedLicenseIds.get -> System.Collections.Generic.IReadOnlyList<string!>!
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListClaims.RevokedLicenseIds.set -> void
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListClaims.SchemaVersion.get -> int
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListClaims.SchemaVersion.set -> void
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListClaims.SequenceNumber.get -> long
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListClaims.SequenceNumber.set -> void
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationResult
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationResult.IsValid.get -> bool
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationResult.List.get -> MySerialKey.GiqhDev.Licensing.Revocation.ValidatedRevocationList?
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationResult.Message.get -> string?
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationResult.Status.get -> MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus.Corrupted = 5 -> MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus.Expired = 8 -> MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus.InvalidEnvelope = 1 -> MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus.InvalidSignature = 4 -> MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus.NotYetValid = 7 -> MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus.RollbackDetected = 10 -> MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus.UnknownSigningKey = 3 -> MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus.UnsupportedAlgorithm = 2 -> MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus.UnsupportedSchema = 6 -> MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus.Valid = 0 -> MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus
+MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus.WrongProduct = 9 -> MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationStatus
+MySerialKey.GiqhDev.Licensing.Revocation.SignedRevocationList
+MySerialKey.GiqhDev.Licensing.Revocation.SignedRevocationList.Algorithm.get -> string!
+MySerialKey.GiqhDev.Licensing.Revocation.SignedRevocationList.Format.get -> string!
+MySerialKey.GiqhDev.Licensing.Revocation.SignedRevocationList.KeyId.get -> string!
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.IRevocationListStore
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.IRevocationListStore.Delete(string! productCode) -> bool
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.IRevocationListStore.Load(string! productCode) -> MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListStoreReadResult!
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.IRevocationListStore.Save(string! productCode, MySerialKey.GiqhDev.Licensing.Revocation.SignedRevocationList! list) -> bool
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.ProtectedRevocationListStore
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.ProtectedRevocationListStore.Delete(string! productCode) -> bool
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.ProtectedRevocationListStore.Load(string! productCode) -> MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListStoreReadResult!
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.ProtectedRevocationListStore.ProtectedRevocationListStore(MySerialKey.GiqhDev.Storage.IProtectedDataStore! store) -> void
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.ProtectedRevocationListStore.Save(string! productCode, MySerialKey.GiqhDev.Licensing.Revocation.SignedRevocationList! list) -> bool
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImporter
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImporter.Import(string! productCode, MySerialKey.GiqhDev.Licensing.Revocation.SignedRevocationList! candidate, System.DateTimeOffset nowUtc, System.Collections.Generic.IReadOnlyCollection<MySerialKey.GiqhDev.Licensing.LicenseVerificationKey!>! trustedKeys) -> MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportResult!
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImporter.RevocationListImporter(MySerialKey.GiqhDev.Licensing.Revocation.Storage.IRevocationListStore! store, MySerialKey.GiqhDev.Licensing.Revocation.EcdsaRevocationListValidator! validator) -> void
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportResult
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportResult.IsSuccess.get -> bool
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportResult.Message.get -> string?
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportResult.Status.get -> MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportStatus
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportResult.Validation.get -> MySerialKey.GiqhDev.Licensing.Revocation.RevocationListValidationResult?
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportStatus
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportStatus.AlreadyCurrent = 1 -> MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportStatus
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportStatus.Imported = 0 -> MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportStatus
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportStatus.InvalidCandidate = 2 -> MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportStatus
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportStatus.RollbackDetected = 3 -> MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportStatus
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportStatus.StorageUnavailable = 5 -> MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportStatus
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportStatus.StoredListInvalid = 4 -> MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListImportStatus
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListStoreReadResult
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListStoreReadResult.List.get -> MySerialKey.GiqhDev.Licensing.Revocation.SignedRevocationList?
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListStoreReadResult.Message.get -> string?
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListStoreReadResult.Status.get -> MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListStoreReadStatus
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListStoreReadStatus
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListStoreReadStatus.Corrupted = 2 -> MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListStoreReadStatus
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListStoreReadStatus.NotFound = 1 -> MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListStoreReadStatus
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListStoreReadStatus.Success = 0 -> MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListStoreReadStatus
+MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListStoreReadStatus.Unavailable = 3 -> MySerialKey.GiqhDev.Licensing.Revocation.Storage.RevocationListStoreReadStatus
+MySerialKey.GiqhDev.Licensing.Revocation.ValidatedRevocationList
+MySerialKey.GiqhDev.Licensing.Revocation.ValidatedRevocationList.Contains(string! licenseId) -> bool
+MySerialKey.GiqhDev.Licensing.Revocation.ValidatedRevocationList.ExpiresAtUtc.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Licensing.Revocation.ValidatedRevocationList.IssuedAtUtc.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Licensing.Revocation.ValidatedRevocationList.ProductCode.get -> string!
+MySerialKey.GiqhDev.Licensing.Revocation.ValidatedRevocationList.RevokedLicenseIds.get -> System.Collections.Generic.IReadOnlyList<string!>!
+MySerialKey.GiqhDev.Licensing.Revocation.ValidatedRevocationList.SequenceNumber.get -> long
+MySerialKey.GiqhDev.Licensing.SignedLicense
+MySerialKey.GiqhDev.Licensing.SignedLicense.Algorithm.get -> string!
+MySerialKey.GiqhDev.Licensing.SignedLicense.Format.get -> string!
+MySerialKey.GiqhDev.Licensing.SignedLicense.KeyId.get -> string!
+MySerialKey.GiqhDev.Licensing.Signing.EcdsaLicenseSigner
+MySerialKey.GiqhDev.Licensing.Signing.EcdsaLicenseSigner.EcdsaLicenseSigner() -> void
+MySerialKey.GiqhDev.Licensing.Signing.EcdsaLicenseSigner.Sign(MySerialKey.GiqhDev.Licensing.LicenseClaims! claims, string! keyId, System.Security.Cryptography.ECDsa! privateKey) -> MySerialKey.GiqhDev.Licensing.SignedLicense!
+MySerialKey.GiqhDev.Licensing.Storage.ILicenseStore
+MySerialKey.GiqhDev.Licensing.Storage.ILicenseStore.Delete(string! productCode) -> bool
+MySerialKey.GiqhDev.Licensing.Storage.ILicenseStore.Load(string! productCode) -> MySerialKey.GiqhDev.Licensing.Storage.LicenseStoreReadResult!
+MySerialKey.GiqhDev.Licensing.Storage.ILicenseStore.Save(string! productCode, MySerialKey.GiqhDev.Licensing.SignedLicense! license) -> bool
+MySerialKey.GiqhDev.Licensing.Storage.LicenseStoreReadResult
+MySerialKey.GiqhDev.Licensing.Storage.LicenseStoreReadResult.License.get -> MySerialKey.GiqhDev.Licensing.SignedLicense?
+MySerialKey.GiqhDev.Licensing.Storage.LicenseStoreReadResult.Message.get -> string?
+MySerialKey.GiqhDev.Licensing.Storage.LicenseStoreReadResult.Status.get -> MySerialKey.GiqhDev.Licensing.Storage.LicenseStoreReadStatus
+MySerialKey.GiqhDev.Licensing.Storage.LicenseStoreReadStatus
+MySerialKey.GiqhDev.Licensing.Storage.LicenseStoreReadStatus.Corrupted = 2 -> MySerialKey.GiqhDev.Licensing.Storage.LicenseStoreReadStatus
+MySerialKey.GiqhDev.Licensing.Storage.LicenseStoreReadStatus.NotFound = 1 -> MySerialKey.GiqhDev.Licensing.Storage.LicenseStoreReadStatus
+MySerialKey.GiqhDev.Licensing.Storage.LicenseStoreReadStatus.Success = 0 -> MySerialKey.GiqhDev.Licensing.Storage.LicenseStoreReadStatus
+MySerialKey.GiqhDev.Licensing.Storage.LicenseStoreReadStatus.Unavailable = 3 -> MySerialKey.GiqhDev.Licensing.Storage.LicenseStoreReadStatus
+MySerialKey.GiqhDev.Licensing.Storage.ProtectedLicenseStore
+MySerialKey.GiqhDev.Licensing.Storage.ProtectedLicenseStore.Delete(string! productCode) -> bool
+MySerialKey.GiqhDev.Licensing.Storage.ProtectedLicenseStore.Load(string! productCode) -> MySerialKey.GiqhDev.Licensing.Storage.LicenseStoreReadResult!
+MySerialKey.GiqhDev.Licensing.Storage.ProtectedLicenseStore.ProtectedLicenseStore(MySerialKey.GiqhDev.Storage.IProtectedDataStore! store) -> void
+MySerialKey.GiqhDev.Licensing.Storage.ProtectedLicenseStore.Save(string! productCode, MySerialKey.GiqhDev.Licensing.SignedLicense! license) -> bool
+MySerialKey.GiqhDev.Storage.DpapiDataProtector
+MySerialKey.GiqhDev.Storage.DpapiDataProtector.DpapiDataProtector(bool useMachineScope = false) -> void
+MySerialKey.GiqhDev.Storage.DpapiDataProtector.Protect(byte[]! plaintext, string! purpose) -> byte[]!
+MySerialKey.GiqhDev.Storage.DpapiDataProtector.Unprotect(byte[]! protectedData, string! purpose) -> byte[]!
+MySerialKey.GiqhDev.Storage.FileProtectedDataStore
+MySerialKey.GiqhDev.Storage.FileProtectedDataStore.Delete(string! productCode, string! entryName) -> bool
+MySerialKey.GiqhDev.Storage.FileProtectedDataStore.FileProtectedDataStore(string! rootPath, MySerialKey.GiqhDev.Storage.IDataProtector! protector) -> void
+MySerialKey.GiqhDev.Storage.FileProtectedDataStore.Read(string! productCode, string! entryName) -> MySerialKey.GiqhDev.Storage.ProtectedDataReadResult!
+MySerialKey.GiqhDev.Storage.FileProtectedDataStore.TryCreate(string! productCode, string! entryName, byte[]! value) -> MySerialKey.GiqhDev.Storage.ProtectedDataWriteResult!
+MySerialKey.GiqhDev.Storage.FileProtectedDataStore.Write(string! productCode, string! entryName, byte[]! value) -> MySerialKey.GiqhDev.Storage.ProtectedDataWriteResult!
+MySerialKey.GiqhDev.Storage.IDataProtector
+MySerialKey.GiqhDev.Storage.IDataProtector.Protect(byte[]! plaintext, string! purpose) -> byte[]!
+MySerialKey.GiqhDev.Storage.IDataProtector.Unprotect(byte[]! protectedData, string! purpose) -> byte[]!
+MySerialKey.GiqhDev.Storage.IProtectedDataStore
+MySerialKey.GiqhDev.Storage.IProtectedDataStore.Delete(string! productCode, string! entryName) -> bool
+MySerialKey.GiqhDev.Storage.IProtectedDataStore.Read(string! productCode, string! entryName) -> MySerialKey.GiqhDev.Storage.ProtectedDataReadResult!
+MySerialKey.GiqhDev.Storage.IProtectedDataStore.TryCreate(string! productCode, string! entryName, byte[]! value) -> MySerialKey.GiqhDev.Storage.ProtectedDataWriteResult!
+MySerialKey.GiqhDev.Storage.IProtectedDataStore.Write(string! productCode, string! entryName, byte[]! value) -> MySerialKey.GiqhDev.Storage.ProtectedDataWriteResult!
+MySerialKey.GiqhDev.Storage.ProtectedDataReadResult
+MySerialKey.GiqhDev.Storage.ProtectedDataReadResult.Message.get -> string?
+MySerialKey.GiqhDev.Storage.ProtectedDataReadResult.Status.get -> MySerialKey.GiqhDev.Storage.ProtectedDataReadStatus
+MySerialKey.GiqhDev.Storage.ProtectedDataReadResult.Value.get -> byte[]?
+MySerialKey.GiqhDev.Storage.ProtectedDataReadStatus
+MySerialKey.GiqhDev.Storage.ProtectedDataReadStatus.Corrupted = 2 -> MySerialKey.GiqhDev.Storage.ProtectedDataReadStatus
+MySerialKey.GiqhDev.Storage.ProtectedDataReadStatus.NotFound = 1 -> MySerialKey.GiqhDev.Storage.ProtectedDataReadStatus
+MySerialKey.GiqhDev.Storage.ProtectedDataReadStatus.Success = 0 -> MySerialKey.GiqhDev.Storage.ProtectedDataReadStatus
+MySerialKey.GiqhDev.Storage.ProtectedDataReadStatus.Unavailable = 3 -> MySerialKey.GiqhDev.Storage.ProtectedDataReadStatus
+MySerialKey.GiqhDev.Storage.ProtectedDataWriteResult
+MySerialKey.GiqhDev.Storage.ProtectedDataWriteResult.Message.get -> string?
+MySerialKey.GiqhDev.Storage.ProtectedDataWriteResult.Status.get -> MySerialKey.GiqhDev.Storage.ProtectedDataWriteStatus
+MySerialKey.GiqhDev.Storage.ProtectedDataWriteStatus
+MySerialKey.GiqhDev.Storage.ProtectedDataWriteStatus.AlreadyExists = 1 -> MySerialKey.GiqhDev.Storage.ProtectedDataWriteStatus
+MySerialKey.GiqhDev.Storage.ProtectedDataWriteStatus.Success = 0 -> MySerialKey.GiqhDev.Storage.ProtectedDataWriteStatus
+MySerialKey.GiqhDev.Storage.ProtectedDataWriteStatus.Unavailable = 2 -> MySerialKey.GiqhDev.Storage.ProtectedDataWriteStatus
+MySerialKey.GiqhDev.Storage.WindowsStoragePaths
+MySerialKey.GiqhDev.Storage.WindowsStoragePermissions
+MySerialKey.GiqhDev.Trial.IClock
+MySerialKey.GiqhDev.Trial.IClock.UtcNow.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Trial.ITrialService
+MySerialKey.GiqhDev.Trial.ITrialService.Get(string! productCode) -> MySerialKey.GiqhDev.Trial.TrialValidationResult!
+MySerialKey.GiqhDev.Trial.ITrialService.MarkConvertedToLicense(string! productCode, System.DateTimeOffset? trustedTimeUtc = null) -> MySerialKey.GiqhDev.Trial.TrialValidationResult!
+MySerialKey.GiqhDev.Trial.ITrialService.Start(string! productCode) -> MySerialKey.GiqhDev.Trial.TrialValidationResult!
+MySerialKey.GiqhDev.Trial.ITrialService.Validate(string! productCode, System.DateTimeOffset? trustedTimeUtc = null) -> MySerialKey.GiqhDev.Trial.TrialValidationResult!
+MySerialKey.GiqhDev.Trial.ProtectedTrialService
+MySerialKey.GiqhDev.Trial.ProtectedTrialService.Get(string! productCode) -> MySerialKey.GiqhDev.Trial.TrialValidationResult!
+MySerialKey.GiqhDev.Trial.ProtectedTrialService.MarkConvertedToLicense(string! productCode, System.DateTimeOffset? trustedTimeUtc = null) -> MySerialKey.GiqhDev.Trial.TrialValidationResult!
+MySerialKey.GiqhDev.Trial.ProtectedTrialService.ProtectedTrialService(MySerialKey.GiqhDev.Storage.IProtectedDataStore! store, MySerialKey.GiqhDev.Trial.TrialOptions? options = null, MySerialKey.GiqhDev.Trial.IClock? clock = null) -> void
+MySerialKey.GiqhDev.Trial.ProtectedTrialService.Start(string! productCode) -> MySerialKey.GiqhDev.Trial.TrialValidationResult!
+MySerialKey.GiqhDev.Trial.ProtectedTrialService.Validate(string! productCode, System.DateTimeOffset? trustedTimeUtc = null) -> MySerialKey.GiqhDev.Trial.TrialValidationResult!
+MySerialKey.GiqhDev.Trial.SystemClock
+MySerialKey.GiqhDev.Trial.SystemClock.UtcNow.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Trial.TrialOptions
+MySerialKey.GiqhDev.Trial.TrialOptions.ClockRollbackTolerance.get -> System.TimeSpan
+MySerialKey.GiqhDev.Trial.TrialOptions.Duration.get -> System.TimeSpan
+MySerialKey.GiqhDev.Trial.TrialOptions.TrialOptions() -> void
+MySerialKey.GiqhDev.Trial.TrialOptions.TrialOptions(System.TimeSpan duration) -> void
+MySerialKey.GiqhDev.Trial.TrialOptions.TrialOptions(System.TimeSpan duration, System.TimeSpan clockRollbackTolerance) -> void
+MySerialKey.GiqhDev.Trial.TrialState
+MySerialKey.GiqhDev.Trial.TrialState.ConvertedToLicenseAtUtc.get -> System.DateTimeOffset?
+MySerialKey.GiqhDev.Trial.TrialState.ExpiresAtUtc.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Trial.TrialState.LastSuccessfulRunUtc.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Trial.TrialState.LastTrustedTimeUtc.get -> System.DateTimeOffset?
+MySerialKey.GiqhDev.Trial.TrialState.StartedAtUtc.get -> System.DateTimeOffset
+MySerialKey.GiqhDev.Trial.TrialValidationResult
+MySerialKey.GiqhDev.Trial.TrialValidationResult.IsActive.get -> bool
+MySerialKey.GiqhDev.Trial.TrialValidationResult.Message.get -> string?
+MySerialKey.GiqhDev.Trial.TrialValidationResult.Remaining.get -> System.TimeSpan
+MySerialKey.GiqhDev.Trial.TrialValidationResult.State.get -> MySerialKey.GiqhDev.Trial.TrialState?
+MySerialKey.GiqhDev.Trial.TrialValidationResult.Status.get -> MySerialKey.GiqhDev.Trial.TrialValidationStatus
+MySerialKey.GiqhDev.Trial.TrialValidationStatus
+MySerialKey.GiqhDev.Trial.TrialValidationStatus.Active = 0 -> MySerialKey.GiqhDev.Trial.TrialValidationStatus
+MySerialKey.GiqhDev.Trial.TrialValidationStatus.AlreadyStarted = 2 -> MySerialKey.GiqhDev.Trial.TrialValidationStatus
+MySerialKey.GiqhDev.Trial.TrialValidationStatus.ClockRollbackDetected = 4 -> MySerialKey.GiqhDev.Trial.TrialValidationStatus
+MySerialKey.GiqhDev.Trial.TrialValidationStatus.ConvertedToLicense = 5 -> MySerialKey.GiqhDev.Trial.TrialValidationStatus
+MySerialKey.GiqhDev.Trial.TrialValidationStatus.Corrupted = 6 -> MySerialKey.GiqhDev.Trial.TrialValidationStatus
+MySerialKey.GiqhDev.Trial.TrialValidationStatus.Expired = 3 -> MySerialKey.GiqhDev.Trial.TrialValidationStatus
+MySerialKey.GiqhDev.Trial.TrialValidationStatus.NotStarted = 1 -> MySerialKey.GiqhDev.Trial.TrialValidationStatus
+MySerialKey.GiqhDev.Trial.TrialValidationStatus.StorageUnavailable = 7 -> MySerialKey.GiqhDev.Trial.TrialValidationStatus
+MySerialKey.GiqhDev.Validation.SerialKeyValidator
+MySerialKey.GiqhDev.Validation.SerialValidationError
+MySerialKey.GiqhDev.Validation.SerialValidationError.AuthenticationFailed = 8 -> MySerialKey.GiqhDev.Validation.SerialValidationError
+MySerialKey.GiqhDev.Validation.SerialValidationError.InvalidCharacter = 6 -> MySerialKey.GiqhDev.Validation.SerialValidationError
+MySerialKey.GiqhDev.Validation.SerialValidationError.InvalidFormat = 7 -> MySerialKey.GiqhDev.Validation.SerialValidationError
+MySerialKey.GiqhDev.Validation.SerialValidationError.InvalidLength = 2 -> MySerialKey.GiqhDev.Validation.SerialValidationError
+MySerialKey.GiqhDev.Validation.SerialValidationError.InvalidSegmentCount = 3 -> MySerialKey.GiqhDev.Validation.SerialValidationError
+MySerialKey.GiqhDev.Validation.SerialValidationError.InvalidSegmentLength = 4 -> MySerialKey.GiqhDev.Validation.SerialValidationError
+MySerialKey.GiqhDev.Validation.SerialValidationError.InvalidSeparator = 5 -> MySerialKey.GiqhDev.Validation.SerialValidationError
+MySerialKey.GiqhDev.Validation.SerialValidationError.None = 0 -> MySerialKey.GiqhDev.Validation.SerialValidationError
+MySerialKey.GiqhDev.Validation.SerialValidationError.NullOrEmpty = 1 -> MySerialKey.GiqhDev.Validation.SerialValidationError
+MySerialKey.GiqhDev.Validation.SerialValidationResult
+MySerialKey.GiqhDev.Validation.SerialValidationResult.Error.get -> MySerialKey.GiqhDev.Validation.SerialValidationError
+MySerialKey.GiqhDev.Validation.SerialValidationResult.IsValid.get -> bool
+MySerialKey.GiqhDev.Validation.SerialValidationResult.Message.get -> string?
+MySerialKey.GiqhDev.Validation.SerialValidationResult.NormalizedSerial.get -> string?
+override MySerialKey.GiqhDev.Activation.Offline.ActivationRequest.ToString() -> string!
+override MySerialKey.GiqhDev.Activation.Offline.ActivationResponse.ToString() -> string!
+override MySerialKey.GiqhDev.Licensing.Revocation.SignedRevocationList.ToString() -> string!
+override MySerialKey.GiqhDev.Licensing.SignedLicense.ToString() -> string!
+static MySerialKey.GiqhDev.Activation.Offline.ActivationRequest.Create(string! productCode, string! installationId, System.DateTimeOffset nowUtc, System.TimeSpan? validity = null, string? applicationVersion = null) -> MySerialKey.GiqhDev.Activation.Offline.ActivationRequest!
+static MySerialKey.GiqhDev.Activation.Offline.ActivationRequest.Load(string! path) -> MySerialKey.GiqhDev.Activation.Offline.ActivationRequest!
+static MySerialKey.GiqhDev.Activation.Offline.ActivationRequest.Parse(string! token) -> MySerialKey.GiqhDev.Activation.Offline.ActivationRequest!
+static MySerialKey.GiqhDev.Activation.Offline.ActivationRequest.TryParse(string? token, out MySerialKey.GiqhDev.Activation.Offline.ActivationRequest? request) -> bool
+static MySerialKey.GiqhDev.Activation.Offline.ActivationResponse.Load(string! path) -> MySerialKey.GiqhDev.Activation.Offline.ActivationResponse!
+static MySerialKey.GiqhDev.Activation.Offline.ActivationResponse.Parse(string! token) -> MySerialKey.GiqhDev.Activation.Offline.ActivationResponse!
+static MySerialKey.GiqhDev.Activation.Offline.ActivationResponse.TryParse(string? token, out MySerialKey.GiqhDev.Activation.Offline.ActivationResponse? response) -> bool
+static MySerialKey.GiqhDev.Formatting.SerialKeyDefaults.DefaultSegments.get -> System.Collections.Generic.IReadOnlyList<int>!
+static MySerialKey.GiqhDev.Formatting.SerialKeyFormatter.Format(string! rawSerial) -> string!
+static MySerialKey.GiqhDev.Formatting.SerialKeyFormatter.Format(string! rawSerial, MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions? options) -> string!
+static MySerialKey.GiqhDev.Formatting.SerialKeyNormalizer.Normalize(string! serial) -> string!
+static MySerialKey.GiqhDev.Formatting.SerialKeyNormalizer.Normalize(string! serial, MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions? options) -> string!
+static MySerialKey.GiqhDev.Generation.SerialKeyGenerator.Generate() -> string!
+static MySerialKey.GiqhDev.Generation.SerialKeyGenerator.Generate(MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions? options) -> string!
+static MySerialKey.GiqhDev.Generation.SerialKeyGenerator.GenerateAuthenticated(byte[]! secretKey) -> string!
+static MySerialKey.GiqhDev.Generation.SerialKeyGenerator.GenerateAuthenticated(byte[]! secretKey, MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions? options) -> string!
+static MySerialKey.GiqhDev.Licensing.Revocation.SignedRevocationList.Parse(string! token) -> MySerialKey.GiqhDev.Licensing.Revocation.SignedRevocationList!
+static MySerialKey.GiqhDev.Licensing.Revocation.SignedRevocationList.TryParse(string? token, out MySerialKey.GiqhDev.Licensing.Revocation.SignedRevocationList? list) -> bool
+static MySerialKey.GiqhDev.Licensing.SignedLicense.Parse(string! token) -> MySerialKey.GiqhDev.Licensing.SignedLicense!
+static MySerialKey.GiqhDev.Licensing.SignedLicense.TryParse(string? token, out MySerialKey.GiqhDev.Licensing.SignedLicense? license) -> bool
+static MySerialKey.GiqhDev.Storage.WindowsStoragePaths.GetCurrentUserRoot() -> string!
+static MySerialKey.GiqhDev.Storage.WindowsStoragePaths.GetMachineRoot() -> string!
+static MySerialKey.GiqhDev.Storage.WindowsStoragePermissions.ApplyRestrictedMachineAcl(string! directoryPath, params System.Security.Principal.SecurityIdentifier![]! authorizedIdentities) -> void
+static MySerialKey.GiqhDev.Trial.SystemClock.Instance.get -> MySerialKey.GiqhDev.Trial.SystemClock!
+static MySerialKey.GiqhDev.Trial.TrialOptions.DefaultClockRollbackTolerance.get -> System.TimeSpan
+static MySerialKey.GiqhDev.Trial.TrialOptions.SuggestedDuration.get -> System.TimeSpan
+static MySerialKey.GiqhDev.Validation.SerialKeyValidator.IsValid(string? serial) -> bool
+static MySerialKey.GiqhDev.Validation.SerialKeyValidator.Validate(string? serial) -> MySerialKey.GiqhDev.Validation.SerialValidationResult!
+static MySerialKey.GiqhDev.Validation.SerialKeyValidator.Validate(string? serial, MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions? options) -> MySerialKey.GiqhDev.Validation.SerialValidationResult!
+static MySerialKey.GiqhDev.Validation.SerialKeyValidator.ValidateAuthenticated(string? serial, byte[]! secretKey) -> MySerialKey.GiqhDev.Validation.SerialValidationResult!
+static MySerialKey.GiqhDev.Validation.SerialKeyValidator.ValidateAuthenticated(string? serial, byte[]! secretKey, MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions? options) -> MySerialKey.GiqhDev.Validation.SerialValidationResult!
+static MySerialKey.GiqhDev.Validation.SerialKeyValidator.ValidateFormat(string? serial) -> MySerialKey.GiqhDev.Validation.SerialValidationResult!
+static MySerialKey.GiqhDev.Validation.SerialKeyValidator.ValidateFormat(string? serial, MySerialKey.GiqhDev.Generation.SerialKeyGenerationOptions? options) -> MySerialKey.GiqhDev.Validation.SerialValidationResult!
+static MySerialKey.GiqhDev.Validation.SerialValidationResult.Failure(MySerialKey.GiqhDev.Validation.SerialValidationError error, string! message) -> MySerialKey.GiqhDev.Validation.SerialValidationResult!
+static MySerialKey.GiqhDev.Validation.SerialValidationResult.Success(string! normalizedSerial) -> MySerialKey.GiqhDev.Validation.SerialValidationResult!

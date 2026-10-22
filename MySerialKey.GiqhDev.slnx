@@ -3,4 +3,6 @@
   <Project Path="tests/MySerialKey.GiqhDev.Tests/MySerialKey.GiqhDev.Tests.csproj" />
   <Project Path="tests/MySerialKey.GiqhDev.ProcessProbe/MySerialKey.GiqhDev.ProcessProbe.csproj" />
   <Project Path="samples/MySerialKey.GiqhDev.ConsoleSample/MySerialKey.GiqhDev.ConsoleSample.csproj" />
+  <Project Path="samples/MySerialKey.GiqhDev.IssuerSample/MySerialKey.GiqhDev.IssuerSample.csproj" />
+  <Project Path="samples/MySerialKey.GiqhDev.ClientSample/MySerialKey.GiqhDev.ClientSample.csproj" />
 </Solution>

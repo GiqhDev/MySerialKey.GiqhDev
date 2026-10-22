@@ -7,9 +7,9 @@ using MySerialKey.GiqhDev.Licensing.Revocation.Internal;
 namespace MySerialKey.GiqhDev.Licensing.Revocation;
 
 /// <summary>Authenticates and validates ES256 offline revocation lists.</summary>
-public sealed class EcdsaRevocationListValidator
+public sealed class EcdsaRevocationListValidator : IRevocationListValidator
 {
-    /// <summary>Validates a list for a product, trusted time, and optional sequence floor.</summary>
+    /// <inheritdoc />
     public RevocationListValidationResult Validate(
         SignedRevocationList list,
         string productCode,
