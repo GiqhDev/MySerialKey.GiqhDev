@@ -10,6 +10,7 @@ internal static class SignedLicenseEnvelope
     private const int MaximumTokenLength = 131072;
     private static readonly UTF8Encoding StrictUtf8 = new UTF8Encoding(false, true);
 
+    /// <summary>Creates a signed-license object with the fixed MSL1 version and ES256 algorithm.</summary>
     public static SignedLicense Create(string keyId, byte[] payload, byte[] signature)
     {
         string encodedKeyId = Base64Url.Encode(StrictUtf8.GetBytes(keyId));
@@ -24,6 +25,7 @@ internal static class SignedLicenseEnvelope
             (byte[])signature.Clone());
     }
 
+    /// <summary>Builds the canonical envelope bytes authenticated by the ECDSA signature.</summary>
     public static byte[] BuildSigningInput(SignedLicense license)
     {
         string value = string.Concat(
@@ -37,6 +39,7 @@ internal static class SignedLicenseEnvelope
         return Encoding.ASCII.GetBytes(value);
     }
 
+    /// <summary>Formats an authenticated license as a portable dot-separated MSL1 token.</summary>
     public static string BuildToken(SignedLicense license)
     {
         return string.Concat(
@@ -51,6 +54,7 @@ internal static class SignedLicenseEnvelope
             license.EncodedSignature);
     }
 
+    /// <summary>Parses the MSL1 envelope structure without treating its contents as trusted.</summary>
     public static bool TryParse(string? token, out SignedLicense? license)
     {
         license = null;

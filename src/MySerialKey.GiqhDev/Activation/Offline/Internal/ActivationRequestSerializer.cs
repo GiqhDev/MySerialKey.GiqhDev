@@ -9,6 +9,7 @@ internal static class ActivationRequestSerializer
     private static readonly byte[] Magic = { 0x4D, 0x53, 0x41, 0x52 };
     private static readonly UTF8Encoding StrictUtf8 = new UTF8Encoding(false, true);
 
+    /// <summary>Checks request chronology, identifiers, text limits, and nonce size before serialization.</summary>
     public static void Validate(ActivationRequest request)
     {
         ValidateRequired(request.RequestId, "Request identifier");
@@ -31,6 +32,7 @@ internal static class ActivationRequestSerializer
         }
     }
 
+    /// <summary>Encodes an activation request into its deterministic versioned binary payload.</summary>
     public static byte[] Serialize(ActivationRequest request)
     {
         Validate(request);
@@ -52,6 +54,7 @@ internal static class ActivationRequestSerializer
         }
     }
 
+    /// <summary>Decodes and validates a versioned activation-request payload.</summary>
     public static ActivationRequest Deserialize(byte[] payload)
     {
         try
@@ -104,12 +107,14 @@ internal static class ActivationRequestSerializer
         }
     }
 
+    /// <summary>Reads UTC ticks and rejects timestamps outside the supported range.</summary>
     private static DateTimeOffset ReadUtc(BinaryReader reader)
     {
         long ticks = reader.ReadInt64();
         return new DateTimeOffset(new DateTime(ticks, DateTimeKind.Utc));
     }
 
+    /// <summary>Validates a required request text field and its UTF-8 size limit.</summary>
     private static void ValidateRequired(string value, string name)
     {
         if (string.IsNullOrWhiteSpace(value) || StrictUtf8.GetByteCount(value) > MaximumStringBytes)
@@ -118,6 +123,7 @@ internal static class ActivationRequestSerializer
         }
     }
 
+    /// <summary>Validates an optional request text field when it is present.</summary>
     private static void ValidateOptional(string? value, string name)
     {
         if (value is not null &&
@@ -127,6 +133,7 @@ internal static class ActivationRequestSerializer
         }
     }
 
+    /// <summary>Writes a UTF-8 string with an explicit byte-length prefix.</summary>
     private static void WriteString(BinaryWriter writer, string value)
     {
         byte[] bytes = StrictUtf8.GetBytes(value);
@@ -134,6 +141,7 @@ internal static class ActivationRequestSerializer
         writer.Write(bytes);
     }
 
+    /// <summary>Reads a bounded, strictly decoded UTF-8 string.</summary>
     private static string ReadString(BinaryReader reader)
     {
         int length = reader.ReadInt32();
@@ -151,6 +159,7 @@ internal static class ActivationRequestSerializer
         return StrictUtf8.GetString(bytes);
     }
 
+    /// <summary>Writes an optional string using a presence marker.</summary>
     private static void WriteOptional(BinaryWriter writer, string? value)
     {
         writer.Write(value is not null);
@@ -160,6 +169,7 @@ internal static class ActivationRequestSerializer
         }
     }
 
+    /// <summary>Reads an optional string encoded with a presence marker.</summary>
     private static string? ReadOptional(BinaryReader reader)
     {
         byte marker = reader.ReadByte();

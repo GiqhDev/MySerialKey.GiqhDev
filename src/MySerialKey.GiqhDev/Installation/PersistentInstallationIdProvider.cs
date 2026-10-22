@@ -66,6 +66,7 @@ public sealed class PersistentInstallationIdProvider : IInstallationIdProvider
             create.Message ?? "The installation identifier could not be stored.");
     }
 
+    /// <summary>Decodes and validates the persisted UTF-8 installation identifier.</summary>
     private static string Decode(byte[] value)
     {
         try
@@ -86,6 +87,7 @@ public sealed class PersistentInstallationIdProvider : IInstallationIdProvider
         }
     }
 
+    /// <summary>Rejects empty or excessively large product scopes before storage access.</summary>
     private static void ValidateProductCode(string productCode)
     {
         Guard.NotNull(productCode, nameof(productCode));

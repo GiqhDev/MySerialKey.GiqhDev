@@ -15,6 +15,7 @@ internal static class LicenseClaimsSerializer
     private static readonly byte[] Magic = { 0x4D, 0x53, 0x4C, 0x50 };
     private static readonly UTF8Encoding StrictUtf8 = new UTF8Encoding(false, true);
 
+    /// <summary>Validates claim semantics and size limits before any signature is produced.</summary>
     public static void ValidateForSigning(LicenseClaims claims)
     {
         if (!IsSupportedSchema(claims.SchemaVersion))
@@ -82,6 +83,7 @@ internal static class LicenseClaimsSerializer
         }
     }
 
+    /// <summary>Serializes claims deterministically so equivalent values produce identical signed bytes.</summary>
     public static byte[] Serialize(LicenseClaims claims)
     {
         string[] features = claims.Features
@@ -130,6 +132,7 @@ internal static class LicenseClaimsSerializer
         }
     }
 
+    /// <summary>Decodes a supported license payload after its enclosing signature has been verified.</summary>
     public static LicenseClaims Deserialize(byte[] payload)
     {
         using (var stream = new MemoryStream(payload, false))
@@ -193,12 +196,14 @@ internal static class LicenseClaimsSerializer
         }
     }
 
+    /// <summary>Reports whether a payload schema can be read by this library version.</summary>
     public static bool IsSupportedSchema(int schemaVersion)
     {
         return schemaVersion >= MinimumSchemaVersion &&
             schemaVersion <= CurrentSchemaVersion;
     }
 
+    /// <summary>Validates a required claim string and its encoded size.</summary>
     private static void ValidateRequired(string value, string name)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -212,6 +217,7 @@ internal static class LicenseClaimsSerializer
         }
     }
 
+    /// <summary>Writes a nullable claim string using an explicit presence marker.</summary>
     private static void WriteNullableString(BinaryWriter writer, string? value)
     {
         writer.Write(value is not null);
@@ -221,11 +227,13 @@ internal static class LicenseClaimsSerializer
         }
     }
 
+    /// <summary>Reads a nullable claim string encoded with a presence marker.</summary>
     private static string? ReadNullableString(BinaryReader reader)
     {
         return reader.ReadBoolean() ? ReadString(reader) : null;
     }
 
+    /// <summary>Writes a claim string with a deterministic UTF-8 byte-length prefix.</summary>
     private static void WriteString(BinaryWriter writer, string value)
     {
         byte[] bytes = StrictUtf8.GetBytes(value);
@@ -238,6 +246,7 @@ internal static class LicenseClaimsSerializer
         writer.Write(bytes);
     }
 
+    /// <summary>Reads a bounded claim string using strict UTF-8 decoding.</summary>
     private static string ReadString(BinaryReader reader)
     {
         int length = reader.ReadInt32();
@@ -255,6 +264,7 @@ internal static class LicenseClaimsSerializer
         return StrictUtf8.GetString(bytes);
     }
 
+    /// <summary>Reads a UTC timestamp while rejecting invalid tick values.</summary>
     private static DateTimeOffset ReadUtcTimestamp(BinaryReader reader)
     {
         long ticks = reader.ReadInt64();

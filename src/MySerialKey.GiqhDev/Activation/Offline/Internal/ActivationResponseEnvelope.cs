@@ -11,6 +11,7 @@ internal static class ActivationResponseEnvelope
     private const int SignatureLength = 64;
     private static readonly UTF8Encoding StrictUtf8 = new UTF8Encoding(false, true);
 
+    /// <summary>Creates an MSAP1 response and signs its authenticated envelope with ES256.</summary>
     public static ActivationResponse Create(
         string keyId,
         ActivationResponsePayload values,
@@ -30,6 +31,7 @@ internal static class ActivationResponseEnvelope
             values);
     }
 
+    /// <summary>Builds the exact version, algorithm, key identifier, and payload bytes covered by the signature.</summary>
     public static byte[] BuildSigningInput(ActivationResponse response)
     {
         return Encoding.ASCII.GetBytes(string.Concat(
@@ -42,6 +44,7 @@ internal static class ActivationResponseEnvelope
             response.EncodedPayload));
     }
 
+    /// <summary>Formats a signed activation response as a portable MSAP1 token.</summary>
     public static string BuildToken(ActivationResponse response)
     {
         return string.Concat(
@@ -56,6 +59,7 @@ internal static class ActivationResponseEnvelope
             response.EncodedSignature);
     }
 
+    /// <summary>Parses an MSAP1 token without trusting or validating its signature.</summary>
     public static bool TryParse(string? token, out ActivationResponse? response)
     {
         response = null;

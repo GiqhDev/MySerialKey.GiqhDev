@@ -44,6 +44,7 @@ public sealed class LicenseVerificationKey
     /// </summary>
     public string Algorithm { get; }
 
+    /// <summary>Creates a disposable ECDSA instance from the stored public parameters.</summary>
     internal ECDsa CreatePublicKey()
     {
         ECDsa key = ECDsa.Create();
@@ -51,6 +52,7 @@ public sealed class LicenseVerificationKey
         return key;
     }
 
+    /// <summary>Copies public curve parameters so callers may safely dispose their original key object.</summary>
     private static ECParameters Clone(ECParameters parameters)
     {
         return new ECParameters

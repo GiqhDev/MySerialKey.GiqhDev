@@ -154,6 +154,7 @@ public sealed class EcdsaLicenseValidator : ILicenseValidator
         return LicenseValidationResult.Success(claims);
     }
 
+    /// <summary>Checks the grace deadline without overflowing at the maximum representable timestamp.</summary>
     private static bool IsBeforeGraceDeadline(
         DateTimeOffset nowUtc,
         DateTimeOffset nextCheckInUtc,
@@ -169,6 +170,7 @@ public sealed class EcdsaLicenseValidator : ILicenseValidator
         return nowUtc < nextCheckInUtc.Add(gracePeriod);
     }
 
+    /// <summary>Finds a trusted key that matches both the authenticated identifier and algorithm.</summary>
     private static LicenseVerificationKey? FindKey(
         SignedLicense license,
         IReadOnlyCollection<LicenseVerificationKey> trustedKeys)

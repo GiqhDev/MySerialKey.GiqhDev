@@ -6,6 +6,7 @@ internal static class TrialStateSerializer
 {
     private static readonly byte[] Marker = Encoding.ASCII.GetBytes("MST1");
 
+    /// <summary>Encodes trial state into its deterministic versioned binary representation.</summary>
     public static byte[] Serialize(TrialState state)
     {
         using (var stream = new MemoryStream())
@@ -22,6 +23,7 @@ internal static class TrialStateSerializer
         }
     }
 
+    /// <summary>Decodes persisted trial state and rejects unsupported or inconsistent records.</summary>
     public static TrialState Deserialize(byte[] value)
     {
         if (value is null)
@@ -76,6 +78,7 @@ internal static class TrialStateSerializer
         }
     }
 
+    /// <summary>Ensures all trial timestamps follow a valid non-decreasing chronology.</summary>
     private static void ValidateChronology(
         DateTimeOffset startedAtUtc,
         DateTimeOffset expiresAtUtc,
@@ -101,17 +104,20 @@ internal static class TrialStateSerializer
         }
     }
 
+    /// <summary>Normalizes a timestamp to UTC ticks for deterministic persistence.</summary>
     private static long ToUtcTicks(DateTimeOffset value)
     {
         return value.UtcDateTime.Ticks;
     }
 
+    /// <summary>Reads UTC ticks and converts invalid values to a format failure.</summary>
     private static DateTimeOffset ReadUtc(BinaryReader reader)
     {
         long ticks = reader.ReadInt64();
         return new DateTimeOffset(new DateTime(ticks, DateTimeKind.Utc));
     }
 
+    /// <summary>Writes an optional UTC timestamp with a presence marker.</summary>
     private static void WriteOptional(BinaryWriter writer, DateTimeOffset? value)
     {
         writer.Write(value.HasValue);
@@ -121,6 +127,7 @@ internal static class TrialStateSerializer
         }
     }
 
+    /// <summary>Reads an optional UTC timestamp encoded with a presence marker.</summary>
     private static DateTimeOffset? ReadOptional(BinaryReader reader)
     {
         byte marker = reader.ReadByte();

@@ -166,6 +166,7 @@ public static class SerialKeyValidator
         return SerialValidationResult.Success(formatResult.NormalizedSerial);
     }
 
+    /// <summary>Determines whether a displayed character index belongs to a configured separator.</summary>
     private static bool IsSeparatorPosition(int index, SerialKeyGenerationOptions options)
     {
         int cursor = 0;

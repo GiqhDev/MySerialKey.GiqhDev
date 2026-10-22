@@ -242,6 +242,7 @@ public sealed class FileProtectedDataStore : IProtectedDataStore
         }
     }
 
+    /// <summary>Builds a versioned protected record containing authenticated purpose-bound data.</summary>
     private byte[] CreateRecord(
         string productCode,
         string entryName,
@@ -266,6 +267,7 @@ public sealed class FileProtectedDataStore : IProtectedDataStore
         return record;
     }
 
+    /// <summary>Reads a stored record while enforcing the maximum accepted file size.</summary>
     private static byte[] ReadBounded(string path)
     {
         var fileInfo = new FileInfo(path);
@@ -283,6 +285,7 @@ public sealed class FileProtectedDataStore : IProtectedDataStore
         return record;
     }
 
+    /// <summary>Checks the fixed record marker before attempting to unprotect stored bytes.</summary>
     private static bool StartsWith(byte[] value, byte[] prefix)
     {
         if (value.Length < prefix.Length)
@@ -301,6 +304,7 @@ public sealed class FileProtectedDataStore : IProtectedDataStore
         return true;
     }
 
+    /// <summary>Maps a logical product entry to a filesystem path without exposing raw identifiers.</summary>
     private string GetEntryPath(string productCode, string entryName)
     {
         return Path.Combine(
@@ -309,6 +313,7 @@ public sealed class FileProtectedDataStore : IProtectedDataStore
             HashName(entryName) + ".bin");
     }
 
+    /// <summary>Creates a deterministic filesystem-safe SHA-256 name for a logical key.</summary>
     private static string HashName(string value)
     {
         using (SHA256 sha256 = SHA256.Create())
@@ -324,11 +329,13 @@ public sealed class FileProtectedDataStore : IProtectedDataStore
         }
     }
 
+    /// <summary>Builds the cryptographic purpose that binds protected bytes to product and entry.</summary>
     private static string BuildPurpose(string productCode, string entryName)
     {
         return productCode.Length + ":" + productCode + ":" + entryName;
     }
 
+    /// <summary>Creates the parent directory required by an atomic write when it is absent.</summary>
     private static void EnsureDirectory(string path)
     {
         string? directory = Path.GetDirectoryName(path);
@@ -340,6 +347,7 @@ public sealed class FileProtectedDataStore : IProtectedDataStore
         Directory.CreateDirectory(directory);
     }
 
+    /// <summary>Creates a short sibling temporary path compatible with .NET Framework path limits.</summary>
     private static string CreateTemporaryPath(string destinationPath)
     {
         string? directory = Path.GetDirectoryName(destinationPath);
@@ -351,6 +359,7 @@ public sealed class FileProtectedDataStore : IProtectedDataStore
         return Path.Combine(directory, Guid.NewGuid().ToString("N") + ".tmp");
     }
 
+    /// <summary>Validates logical keys and payload size before protected persistence.</summary>
     private static void ValidateWrite(
         string productCode,
         string entryName,
@@ -365,6 +374,7 @@ public sealed class FileProtectedDataStore : IProtectedDataStore
         }
     }
 
+    /// <summary>Validates a logical storage key before it is hashed into a path.</summary>
     private static void ValidateKey(string value, string parameterName)
     {
         Guard.NotNull(value, parameterName);
@@ -379,6 +389,7 @@ public sealed class FileProtectedDataStore : IProtectedDataStore
         }
     }
 
+    /// <summary>Best-effort cleanup for temporary files without hiding the primary operation result.</summary>
     private static void TryDelete(string path)
     {
         try
@@ -396,6 +407,7 @@ public sealed class FileProtectedDataStore : IProtectedDataStore
         }
     }
 
+    /// <summary>Detects whether another process won an atomic create race.</summary>
     private static bool ExistsAfterCreateRace(string path)
     {
         for (int attempt = 0; attempt < 25; attempt++)

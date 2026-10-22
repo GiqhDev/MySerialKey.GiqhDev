@@ -37,6 +37,7 @@ public sealed class HttpOnlineActivationClientOptions
     /// <summary>Gets or sets the maximum accepted response-body size.</summary>
     public int MaximumResponseBytes { get; set; } = 1024 * 1024;
 
+    /// <summary>Validates endpoint shapes, retry bounds, delays, and response-size limits.</summary>
     internal void Validate()
     {
         ValidateEndpoint(ActivationEndpoint, nameof(ActivationEndpoint));
@@ -60,6 +61,7 @@ public sealed class HttpOnlineActivationClientOptions
         }
     }
 
+    /// <summary>Ensures an endpoint is a non-empty relative URI resolved by the caller-owned HttpClient.</summary>
     private static void ValidateEndpoint(Uri endpoint, string parameterName)
     {
         if (endpoint is null || endpoint.IsAbsoluteUri || string.IsNullOrWhiteSpace(endpoint.OriginalString))

@@ -188,6 +188,7 @@ public sealed class HttpOnlineActivationClient : IOnlineActivationClient
         }
     }
 
+    /// <summary>Sends a license-producing operation, validates the returned MSL1 token, and persists it safely.</summary>
     private async Task<ActivationClientResult> ExecuteLicenseOperationAsync(
         Uri endpoint,
         string body,
@@ -271,6 +272,7 @@ public sealed class HttpOnlineActivationClient : IOnlineActivationClient
         }
     }
 
+    /// <summary>Sends one logical request with bounded retries while preserving its idempotency identity.</summary>
     private async Task<HttpSendResult> SendWithRetriesAsync(
         Uri endpoint,
         string body,
@@ -331,6 +333,7 @@ public sealed class HttpOnlineActivationClient : IOnlineActivationClient
         throw new InvalidOperationException("The retry loop ended unexpectedly.");
     }
 
+    /// <summary>Reads a response body only when it remains within the configured memory limit.</summary>
     private async Task<byte[]?> ReadBodyAsync(HttpResponseMessage response)
     {
         long? length = response.Content.Headers.ContentLength;
@@ -343,6 +346,7 @@ public sealed class HttpOnlineActivationClient : IOnlineActivationClient
         return body.Length <= _options.MaximumResponseBytes ? body : null;
     }
 
+    /// <summary>Maps HTTP and versioned service errors to transport-independent client statuses.</summary>
     private ActivationClientResult MapServiceFailure(
         HttpStatusCode statusCode,
         byte[] body,
@@ -383,6 +387,7 @@ public sealed class HttpOnlineActivationClient : IOnlineActivationClient
             retryAfter: retryAfter);
     }
 
+    /// <summary>Applies capped exponential backoff before the next retry attempt.</summary>
     private Task DelayAsync(int attempt, CancellationToken cancellationToken)
     {
         if (_options.RetryDelay == TimeSpan.Zero)
@@ -398,6 +403,7 @@ public sealed class HttpOnlineActivationClient : IOnlineActivationClient
             cancellationToken);
     }
 
+    /// <summary>Serializes the common query, renewal, or deactivation request contract.</summary>
     private static string SerializeLicenseRequest(
         int schemaVersion,
         string operationId,
@@ -417,12 +423,14 @@ public sealed class HttpOnlineActivationClient : IOnlineActivationClient
         });
     }
 
+    /// <summary>Determines whether an HTTP status is eligible for an idempotent retry.</summary>
     private static bool IsTransient(HttpStatusCode statusCode)
     {
         int value = (int)statusCode;
         return statusCode == HttpStatusCode.RequestTimeout || value == 429 || value >= 500;
     }
 
+    /// <summary>Parses a round-trip timestamp without accepting alternate ambiguous formats.</summary>
     private static bool TryReadUtc(string? value, out DateTimeOffset result)
     {
         return DateTimeOffset.TryParseExact(
@@ -433,6 +441,7 @@ public sealed class HttpOnlineActivationClient : IOnlineActivationClient
             out result);
     }
 
+    /// <summary>Creates a consistent result for malformed or oversized service responses.</summary>
     private static ActivationClientResult InvalidResponse(string operationId, string message)
     {
         return new ActivationClientResult(
@@ -452,11 +461,13 @@ public sealed class HttpOnlineActivationClient : IOnlineActivationClient
         public HttpResponseMessage? Response { get; }
         public ActivationClientResult? Failure { get; }
 
+        /// <summary>Wraps a received HTTP response for the caller that owns its disposal.</summary>
         public static HttpSendResult Success(HttpResponseMessage response)
         {
             return new HttpSendResult(response, null);
         }
 
+        /// <summary>Wraps a typed transport failure when no HTTP response is available.</summary>
         public static HttpSendResult Failed(ActivationClientResult failure)
         {
             return new HttpSendResult(null, failure);

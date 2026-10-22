@@ -7,11 +7,13 @@ internal static class ActivationRequestEnvelope
     public const string CurrentFormat = "MSAR1";
     private const int MaximumTokenLength = 131072;
 
+    /// <summary>Builds the portable MSAR1 token from a validated activation request.</summary>
     public static string BuildToken(ActivationRequest request)
     {
         return CurrentFormat + "." + Base64Url.Encode(ActivationRequestSerializer.Serialize(request));
     }
 
+    /// <summary>Parses an MSAR1 envelope and decodes its request payload without throwing for malformed input.</summary>
     public static bool TryParse(string? token, out ActivationRequest? request)
     {
         request = null;

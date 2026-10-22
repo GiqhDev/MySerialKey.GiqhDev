@@ -75,6 +75,7 @@ public static class WindowsStoragePermissions
         new DirectoryInfo(fullPath).SetAccessControl(security);
     }
 
+    /// <summary>Adds one inheritable allow rule to the explicit storage directory ACL.</summary>
     private static void AddRule(
         DirectorySecurity security,
         SecurityIdentifier identity,

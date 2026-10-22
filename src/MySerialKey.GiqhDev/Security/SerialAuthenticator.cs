@@ -7,6 +7,7 @@ namespace MySerialKey.GiqhDev.Security;
 
 internal static class SerialAuthenticator
 {
+    /// <summary>Creates the compact HMAC-derived tag appended to a legacy authenticated serial.</summary>
     public static string CreateAuthenticationTag(
         string payload,
         byte[] secretKey,

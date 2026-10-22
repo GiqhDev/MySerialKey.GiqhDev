@@ -242,6 +242,7 @@ public sealed class OfflineActivationClient
         return OfflineActivationImportResult.Success(response.License, licenseValidation);
     }
 
+    /// <summary>Finds the trusted verification key matching the response key identifier and algorithm.</summary>
     private static LicenseVerificationKey? FindKey(
         ActivationResponse response,
         IReadOnlyCollection<LicenseVerificationKey> trustedKeys)
@@ -258,6 +259,7 @@ public sealed class OfflineActivationClient
         return null;
     }
 
+    /// <summary>Compares security-sensitive byte arrays without data-dependent early exit.</summary>
     private static bool FixedTimeEquals(byte[] left, byte[] right)
     {
         int difference = left.Length ^ right.Length;
@@ -270,6 +272,7 @@ public sealed class OfflineActivationClient
         return difference == 0;
     }
 
+    /// <summary>Computes the protected receipt used to detect reuse of an imported response.</summary>
     private static byte[] ComputeReceipt(ActivationResponse response)
     {
         using (SHA256 sha256 = SHA256.Create())
@@ -278,6 +281,7 @@ public sealed class OfflineActivationClient
         }
     }
 
+    /// <summary>Creates a failed offline-import result with a typed status and diagnostic message.</summary>
     private static OfflineActivationImportResult Failure(
         OfflineActivationImportStatus status,
         string message,

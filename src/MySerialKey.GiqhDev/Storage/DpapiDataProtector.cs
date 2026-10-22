@@ -51,6 +51,7 @@ public sealed class DpapiDataProtector : IDataProtector
         return ProtectedData.Unprotect(protectedData, CreateEntropy(purpose), _scope);
     }
 
+    /// <summary>Derives purpose-specific DPAPI entropy so entries cannot be swapped between uses.</summary>
     private static byte[] CreateEntropy(string purpose)
     {
         byte[] purposeBytes = Encoding.UTF8.GetBytes(PurposePrefix + purpose);
@@ -60,6 +61,7 @@ public sealed class DpapiDataProtector : IDataProtector
         }
     }
 
+    /// <summary>Validates that the protection purpose is present and reasonably bounded.</summary>
     private static void ValidatePurpose(string purpose)
     {
         Guard.NotNull(purpose, nameof(purpose));

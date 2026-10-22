@@ -37,6 +37,7 @@ public sealed class LicenseValidationResult
     /// </summary>
     public string? Message { get; }
 
+    /// <summary>Creates a usable validation result with authenticated claims.</summary>
     internal static LicenseValidationResult Success(
         LicenseClaims claims,
         LicenseValidationStatus status = LicenseValidationStatus.Valid)
@@ -44,6 +45,7 @@ public sealed class LicenseValidationResult
         return new LicenseValidationResult(status, claims, null);
     }
 
+    /// <summary>Creates a non-usable validation result and preserves claims only when safely decoded.</summary>
     internal static LicenseValidationResult Failure(
         LicenseValidationStatus status,
         string message,

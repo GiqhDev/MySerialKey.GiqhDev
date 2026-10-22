@@ -34,6 +34,7 @@ public sealed class TrialState
     /// <summary>Gets when the consumer marked the trial as converted to a license.</summary>
     public DateTimeOffset? ConvertedToLicenseAtUtc { get; }
 
+    /// <summary>Creates the next immutable state after a successful trial validation.</summary>
     internal TrialState WithSuccessfulRun(
         DateTimeOffset lastSuccessfulRunUtc,
         DateTimeOffset? lastTrustedTimeUtc)
@@ -46,6 +47,7 @@ public sealed class TrialState
             ConvertedToLicenseAtUtc);
     }
 
+    /// <summary>Creates the next immutable state after conversion to a signed license.</summary>
     internal TrialState WithConversion(DateTimeOffset convertedToLicenseAtUtc)
     {
         return new TrialState(

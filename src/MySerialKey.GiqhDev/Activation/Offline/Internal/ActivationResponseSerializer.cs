@@ -10,6 +10,7 @@ internal static class ActivationResponseSerializer
     private static readonly byte[] Magic = { 0x4D, 0x53, 0x41, 0x50 };
     private static readonly UTF8Encoding StrictUtf8 = new UTF8Encoding(false, true);
 
+    /// <summary>Encodes response metadata and the embedded MSL1 license into a deterministic payload.</summary>
     public static byte[] Serialize(ActivationResponsePayload values)
     {
         Validate(values);
@@ -31,6 +32,7 @@ internal static class ActivationResponseSerializer
         }
     }
 
+    /// <summary>Decodes and validates a versioned activation-response payload.</summary>
     public static ActivationResponsePayload Deserialize(byte[] payload)
     {
         try
@@ -92,6 +94,7 @@ internal static class ActivationResponseSerializer
         }
     }
 
+    /// <summary>Validates response chronology, identifiers, hashes, and embedded token limits.</summary>
     private static void Validate(ActivationResponsePayload values)
     {
         ValidateText(values.RequestId, "Request identifier", 4096);
@@ -113,11 +116,13 @@ internal static class ActivationResponseSerializer
         }
     }
 
+    /// <summary>Reads a UTC timestamp while rejecting invalid tick values.</summary>
     private static DateTimeOffset ReadUtc(BinaryReader reader)
     {
         return new DateTimeOffset(new DateTime(reader.ReadInt64(), DateTimeKind.Utc));
     }
 
+    /// <summary>Validates required response text against a field-specific UTF-8 limit.</summary>
     private static void ValidateText(string value, string name, int maximumBytes)
     {
         if (string.IsNullOrWhiteSpace(value) || StrictUtf8.GetByteCount(value) > maximumBytes)
@@ -126,6 +131,7 @@ internal static class ActivationResponseSerializer
         }
     }
 
+    /// <summary>Writes a UTF-8 response field with its byte length.</summary>
     private static void WriteString(BinaryWriter writer, string value)
     {
         byte[] bytes = StrictUtf8.GetBytes(value);
@@ -138,6 +144,7 @@ internal static class ActivationResponseSerializer
         writer.Write(bytes);
     }
 
+    /// <summary>Reads a bounded response field using strict UTF-8 decoding.</summary>
     private static string ReadString(BinaryReader reader)
     {
         int length = reader.ReadInt32();

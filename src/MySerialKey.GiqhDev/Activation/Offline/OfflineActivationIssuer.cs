@@ -90,6 +90,7 @@ public sealed class OfflineActivationIssuer
         return ActivationResponseEnvelope.Create(keyId, values, signature);
     }
 
+    /// <summary>Hashes the request nonce so the signed response binds to it without copying it directly.</summary>
     internal static byte[] HashNonce(byte[] nonce)
     {
         using (SHA256 sha256 = SHA256.Create())

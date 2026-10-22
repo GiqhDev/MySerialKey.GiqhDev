@@ -4,6 +4,7 @@ namespace MySerialKey.GiqhDev.Licensing.Internal;
 
 internal static class Base64Url
 {
+    /// <summary>Encodes bytes with the unpadded URL-safe Base64 alphabet used by portable tokens.</summary>
     public static string Encode(byte[] value)
     {
         return Convert.ToBase64String(value)
@@ -12,6 +13,7 @@ internal static class Base64Url
             .Replace('/', '_');
     }
 
+    /// <summary>Decodes strict unpadded Base64url text without throwing for malformed input.</summary>
     public static bool TryDecode(string value, out byte[] bytes)
     {
         bytes = Array.Empty<byte>();

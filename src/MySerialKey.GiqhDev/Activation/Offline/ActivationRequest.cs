@@ -119,6 +119,7 @@ public sealed class ActivationRequest
         return ActivationRequestEnvelope.BuildToken(this);
     }
 
+    /// <summary>Reads a bounded UTF-8 activation-request token from disk.</summary>
     private static string ReadToken(string path)
     {
         Guard.NotNull(path, nameof(path));
@@ -131,6 +132,7 @@ public sealed class ActivationRequest
         return File.ReadAllText(path, new UTF8Encoding(false, true)).Trim();
     }
 
+    /// <summary>Writes an activation-request token as UTF-8 after validating its destination.</summary>
     private static void WriteToken(string path, string token)
     {
         Guard.NotNull(path, nameof(path));

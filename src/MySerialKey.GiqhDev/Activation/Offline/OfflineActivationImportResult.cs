@@ -32,6 +32,7 @@ public sealed class OfflineActivationImportResult
     /// <summary>Gets a diagnostic message intended for logs or support tooling.</summary>
     public string? Message { get; }
 
+    /// <summary>Creates a successful import result containing the stored license and its validation details.</summary>
     internal static OfflineActivationImportResult Success(
         SignedLicense license,
         LicenseValidationResult licenseValidation)
@@ -43,6 +44,7 @@ public sealed class OfflineActivationImportResult
             null);
     }
 
+    /// <summary>Creates a failed import result with an optional embedded-license validation result.</summary>
     internal static OfflineActivationImportResult Failure(
         OfflineActivationImportStatus status,
         string message,

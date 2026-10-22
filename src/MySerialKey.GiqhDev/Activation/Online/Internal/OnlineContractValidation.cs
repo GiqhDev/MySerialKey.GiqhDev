@@ -7,6 +7,7 @@ internal static class OnlineContractValidation
 {
     private const int MaximumTextLength = 4096;
 
+    /// <summary>Validates and returns a required bounded contract string.</summary>
     public static string Required(string value, string parameterName)
     {
         Guard.NotNull(value, parameterName);
@@ -20,6 +21,7 @@ internal static class OnlineContractValidation
         return value;
     }
 
+    /// <summary>Validates and returns an optional bounded contract string.</summary>
     public static string? Optional(string? value, string parameterName)
     {
         if (value is not null &&
@@ -33,6 +35,7 @@ internal static class OnlineContractValidation
         return value;
     }
 
+    /// <summary>Creates or validates the GUID-N identifier used for idempotent operations.</summary>
     public static string OperationId(string? value, string parameterName)
     {
         string operationId = value ?? Guid.NewGuid().ToString("N");
@@ -46,12 +49,14 @@ internal static class OnlineContractValidation
         return operationId;
     }
 
+    /// <summary>Converts a parsed signed license into its portable contract token.</summary>
     public static string LicenseToken(SignedLicense license, string parameterName)
     {
         Guard.NotNull(license, parameterName);
         return license.ToString();
     }
 
+    /// <summary>Validates a portable token''s presence and maximum accepted contract size.</summary>
     public static string PortableLicenseToken(string value, string parameterName)
     {
         Guard.NotNull(value, parameterName);

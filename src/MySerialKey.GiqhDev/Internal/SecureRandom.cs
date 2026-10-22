@@ -4,6 +4,7 @@ namespace MySerialKey.GiqhDev.Internal;
 
 internal static class SecureRandom
 {
+    /// <summary>Returns the requested number of cryptographically secure random bytes.</summary>
     public static byte[] GetBytes(int length)
     {
         if (length <= 0)
@@ -20,6 +21,7 @@ internal static class SecureRandom
         return value;
     }
 
+    /// <summary>Returns an unbiased cryptographically secure integer below the exclusive limit.</summary>
     public static int GetInt32(int maxExclusive)
     {
         if (maxExclusive <= 0)

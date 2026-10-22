@@ -82,6 +82,7 @@ public static class SerialKeyGenerator
         return SerialKeyFormatter.Format(payload + tag, effectiveOptions);
     }
 
+    /// <summary>Generates cryptographically random characters with unbiased alphabet selection.</summary>
     private static string GenerateRawPayload(int length, string alphabet)
     {
         var builder = new StringBuilder(length);

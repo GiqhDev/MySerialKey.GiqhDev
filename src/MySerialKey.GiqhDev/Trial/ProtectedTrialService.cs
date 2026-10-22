@@ -203,6 +203,7 @@ public sealed class ProtectedTrialService : ITrialService
             null);
     }
 
+    /// <summary>Loads protected trial state and maps storage or decoding failures to typed outcomes.</summary>
     private TrialValidationResult Load(string productCode, DateTimeOffset nowUtc)
     {
         ProtectedDataReadResult read = _store.Read(productCode, EntryName);
@@ -240,12 +241,14 @@ public sealed class ProtectedTrialService : ITrialService
         }
     }
 
+    /// <summary>Detects a backward time movement larger than the configured tolerance.</summary>
     private bool IsRollback(DateTimeOffset current, DateTimeOffset previous)
     {
         return current < previous &&
             previous - current > _options.ClockRollbackTolerance;
     }
 
+    /// <summary>Detects rollback between two available trusted timestamps.</summary>
     private bool IsTrustedRollback(
         DateTimeOffset? current,
         DateTimeOffset? previous)
@@ -255,11 +258,13 @@ public sealed class ProtectedTrialService : ITrialService
             IsRollback(current.Value, previous.Value);
     }
 
+    /// <summary>Reads the injected clock and normalizes its value to UTC.</summary>
     private DateTimeOffset GetUtcNow()
     {
         return _clock.UtcNow.ToUniversalTime();
     }
 
+    /// <summary>Creates a trial result and calculates a non-negative remaining duration.</summary>
     private static TrialValidationResult Result(
         TrialValidationStatus status,
         TrialState? state,
@@ -272,11 +277,13 @@ public sealed class ProtectedTrialService : ITrialService
         return new TrialValidationResult(status, state, remaining, message);
     }
 
+    /// <summary>Returns the later of two timestamps.</summary>
     private static DateTimeOffset Max(DateTimeOffset left, DateTimeOffset right)
     {
         return left >= right ? left : right;
     }
 
+    /// <summary>Returns the later available timestamp while preserving null when both are absent.</summary>
     private static DateTimeOffset? Max(
         DateTimeOffset? left,
         DateTimeOffset? right)

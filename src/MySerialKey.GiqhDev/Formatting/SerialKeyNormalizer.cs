@@ -51,6 +51,7 @@ public static class SerialKeyNormalizer
             : raw;
     }
 
+    /// <summary>Removes configured separators and normalizes casing before validation or formatting.</summary>
     internal static string GetRawSerial(string serial, SerialKeyGenerationOptions options)
     {
         var rawBuilder = new StringBuilder(serial.Length);

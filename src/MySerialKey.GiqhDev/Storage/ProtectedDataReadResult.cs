@@ -24,6 +24,7 @@ public sealed class ProtectedDataReadResult
     /// <summary>Gets a diagnostic message.</summary>
     public string? Message { get; }
 
+    /// <summary>Creates a successful read result while taking ownership of the recovered bytes.</summary>
     internal static ProtectedDataReadResult Success(byte[] value)
     {
         return new ProtectedDataReadResult(
@@ -32,6 +33,7 @@ public sealed class ProtectedDataReadResult
             null);
     }
 
+    /// <summary>Creates a typed read failure without exposing partial or unauthenticated data.</summary>
     internal static ProtectedDataReadResult Failure(
         ProtectedDataReadStatus status,
         string message)

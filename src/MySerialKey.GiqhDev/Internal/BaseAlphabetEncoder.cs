@@ -2,6 +2,7 @@ namespace MySerialKey.GiqhDev.Internal;
 
 internal static class BaseAlphabetEncoder
 {
+    /// <summary>Converts random bytes to a fixed-length string in the requested alphabet.</summary>
     public static string Encode(byte[] bytes, string alphabet, int length)
     {
         if (length <= 0)
@@ -24,6 +25,7 @@ internal static class BaseAlphabetEncoder
         return new string(encoded);
     }
 
+    /// <summary>Divides a big-endian byte array in place and returns the remainder.</summary>
     private static int Divide(byte[] bytes, int divisor)
     {
         int remainder = 0;
