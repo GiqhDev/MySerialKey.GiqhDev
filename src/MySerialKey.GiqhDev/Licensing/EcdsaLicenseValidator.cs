@@ -21,7 +21,7 @@ public sealed class EcdsaLicenseValidator : ILicenseValidator
         Guard.NotNull(context, nameof(context));
         Guard.NotNull(trustedKeys, nameof(trustedKeys));
 
-        if (!string.Equals(license.Algorithm, LicenseAlgorithms.EcdsaP256Sha256, StringComparison.Ordinal))
+        if (!LicenseAlgorithms.IsSupported(license.Algorithm))
         {
             return LicenseValidationResult.Failure(
                 LicenseValidationStatus.UnsupportedAlgorithm,
@@ -161,6 +161,27 @@ public sealed class EcdsaLicenseValidator : ILicenseValidator
         }
 
         return LicenseValidationResult.Success(claims);
+    }
+
+    /// <summary>
+    /// Validates a license using a key provider backed by any trusted storage mechanism.
+    /// </summary>
+    public LicenseValidationResult Validate(
+        SignedLicense license,
+        LicenseValidationContext context,
+        ILicenseVerificationKeyProvider trustedKeyProvider)
+    {
+        Guard.NotNull(license, nameof(license));
+        Guard.NotNull(context, nameof(context));
+        Guard.NotNull(trustedKeyProvider, nameof(trustedKeyProvider));
+
+        LicenseVerificationKey? key = trustedKeyProvider.Find(
+            license.KeyId,
+            license.Algorithm);
+        IReadOnlyCollection<LicenseVerificationKey> keys = key is null
+            ? Array.Empty<LicenseVerificationKey>()
+            : new[] { key };
+        return Validate(license, context, keys);
     }
 
     /// <summary>Checks the grace deadline without overflowing at the maximum representable timestamp.</summary>

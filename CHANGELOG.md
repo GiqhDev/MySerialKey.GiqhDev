@@ -51,6 +51,12 @@
 - Added separate generic issuer and client samples with an explicit private/public key boundary.
 - Added CI coverage that packs the library, restores a clean consumer from the generated NuGet package, and executes signed-license validation.
 - Documented the 2.0 package layout, target-framework policy, 1.x migration, and obsolescence strategy.
+- Published the enforced MSL1 token, payload, claim, feature, key identifier, and signature limits through `LicenseFormatLimits`.
+- Added portable `MSPK1` public-key export/import without requiring modern SPKI APIs on the consumer.
+- Added `ILicenseVerificationKeyProvider` and a validator overload for keys backed by configuration, certificates, databases, or custom stores.
+- Added an explicit ES256 algorithm allowlist and documented the side-by-side migration procedure for a future MSL2 format.
+- Added systematic authenticated-claim alteration, culture, UTC-offset, Unicode, and aggregate payload-limit tests.
+- Added a stable public MSL1/MSPK1 vector verified by both the .NET test suite and Node/OpenSSL without storing private key material.
 - Removed serial values and fixed sample secrets from console output and source examples.
 - Fixed atomic temporary paths for concurrent storage on .NET Framework `MAX_PATH` environments.
 - Preserved the existing serial and HMAC APIs for legacy compatibility.

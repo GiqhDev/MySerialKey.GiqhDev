@@ -149,6 +149,20 @@ LicenseValidationResult result =
 
 `keyId` and the algorithm are covered by the signature. Multiple public keys can be trusted simultaneously during rotation. Signing must remain in trusted server or administrative code; never deploy the private key with a client application.
 
+Public keys can be transported without platform-specific SPKI APIs by using the versioned `MSPK1` format:
+
+```csharp
+string publicKeyToken =
+    new LicenseVerificationKey("production-2026-01", publicKey).Export();
+
+LicenseVerificationKey importedKey =
+    LicenseVerificationKey.Parse(publicKeyToken);
+```
+
+`MSPK1` contains only the key identifier, the explicit `ES256` algorithm, and public P-256 coordinates. It never contains private key material.
+
+The public `LicenseFormatLimits` contract defines the enforced MSL1 limits: 131,072 token characters, 97,280 authenticated payload bytes, 16,384 UTF-8 bytes per text claim, 256 supplied features, 128 characters per `keyId`, and a 64-byte P1363 signature.
+
 Payload schema 2 keeps the same `MSL1` envelope and adds optional periodic refresh and signed entitlement state:
 
 ```csharp
@@ -436,13 +450,15 @@ MySerialKey does not log tokens, serials, secrets, claims, HTTP bodies, or prote
 
 Repository builds enable current .NET analyzers and code-style checks. NuGet advisories `NU1901` through `NU1904` are treated as errors, and the security workflow runs restore/audit, Release build, and tests on pushes, pull requests, weekly schedule, and manual execution.
 
+The repository includes a stable public `MSL1`/`MSPK1` interoperability vector. The .NET test suite validates it, while the security workflow independently verifies the ES256 signature with Node/OpenSSL. The vector contains no private key.
+
 ## Complete Issuer and Client Examples
 
 The repository keeps issuance and validation in separate applications so the private key boundary is explicit:
 
 ```bash
 dotnet run --project samples/MySerialKey.GiqhDev.IssuerSample -- artifacts/example-license
-dotnet run --project samples/MySerialKey.GiqhDev.ClientSample -- artifacts/example-license/public-key.spki artifacts/example-license/license.msl
+dotnet run --project samples/MySerialKey.GiqhDev.ClientSample -- artifacts/example-license/public-key.mspk artifacts/example-license/license.msl
 ```
 
 The issuer creates a temporary P-256 key for demonstration, writes only its public key and the signed license, and does not persist the private key. A production issuer must load its private key from a protected administrative environment, HSM, or managed key service. The client imports only the public key and reports the typed validation status.

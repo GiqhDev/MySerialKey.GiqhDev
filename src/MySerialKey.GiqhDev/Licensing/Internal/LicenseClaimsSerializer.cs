@@ -10,8 +10,6 @@ internal static class LicenseClaimsSerializer
 {
     public const int CurrentSchemaVersion = 2;
     public const int MinimumSchemaVersion = 1;
-    private const int MaximumStringBytes = 16384;
-    private const int MaximumFeatures = 256;
     private static readonly byte[] Magic = { 0x4D, 0x53, 0x4C, 0x50 };
     private static readonly UTF8Encoding StrictUtf8 = new UTF8Encoding(false, true);
 
@@ -72,7 +70,7 @@ internal static class LicenseClaimsSerializer
             throw new ArgumentException("Features cannot be null.", nameof(claims));
         }
 
-        if (claims.Features.Count > MaximumFeatures)
+        if (claims.Features.Count > LicenseFormatLimits.MaximumFeatures)
         {
             throw new ArgumentException("Too many license features were supplied.", nameof(claims));
         }
@@ -128,6 +126,11 @@ internal static class LicenseClaimsSerializer
             }
 
             writer.Flush();
+            if (stream.Length > LicenseFormatLimits.MaximumSignedLicensePayloadBytes)
+            {
+                throw new ArgumentException("The encoded license payload is too large.", nameof(claims));
+            }
+
             return stream.ToArray();
         }
     }
@@ -156,7 +159,7 @@ internal static class LicenseClaimsSerializer
             int maxTerminals = reader.ReadInt32();
             int featureCount = reader.ReadInt32();
 
-            if (featureCount < 0 || featureCount > MaximumFeatures)
+            if (featureCount < 0 || featureCount > LicenseFormatLimits.MaximumFeatures)
             {
                 throw new FormatException("Invalid license feature count.");
             }
@@ -211,7 +214,7 @@ internal static class LicenseClaimsSerializer
             throw new ArgumentException(name + " cannot be empty.");
         }
 
-        if (StrictUtf8.GetByteCount(value) > MaximumStringBytes)
+        if (StrictUtf8.GetByteCount(value) > LicenseFormatLimits.MaximumClaimTextUtf8Bytes)
         {
             throw new ArgumentException(name + " is too long.");
         }
@@ -237,7 +240,7 @@ internal static class LicenseClaimsSerializer
     private static void WriteString(BinaryWriter writer, string value)
     {
         byte[] bytes = StrictUtf8.GetBytes(value);
-        if (bytes.Length > MaximumStringBytes)
+        if (bytes.Length > LicenseFormatLimits.MaximumClaimTextUtf8Bytes)
         {
             throw new ArgumentException("License text value is too long.");
         }
@@ -250,7 +253,7 @@ internal static class LicenseClaimsSerializer
     private static string ReadString(BinaryReader reader)
     {
         int length = reader.ReadInt32();
-        if (length < 0 || length > MaximumStringBytes)
+        if (length < 0 || length > LicenseFormatLimits.MaximumClaimTextUtf8Bytes)
         {
             throw new FormatException("Invalid license text length.");
         }

@@ -1,1 +1,16 @@
 #nullable enable
+const MySerialKey.GiqhDev.Licensing.LicenseFormatLimits.Es256SignatureBytes = 64 -> int
+const MySerialKey.GiqhDev.Licensing.LicenseFormatLimits.MaximumClaimTextUtf8Bytes = 16384 -> int
+const MySerialKey.GiqhDev.Licensing.LicenseFormatLimits.MaximumFeatures = 256 -> int
+const MySerialKey.GiqhDev.Licensing.LicenseFormatLimits.MaximumKeyIdCharacters = 128 -> int
+const MySerialKey.GiqhDev.Licensing.LicenseFormatLimits.MaximumPublicKeyTokenCharacters = 2048 -> int
+const MySerialKey.GiqhDev.Licensing.LicenseFormatLimits.MaximumSignedLicensePayloadBytes = 97280 -> int
+const MySerialKey.GiqhDev.Licensing.LicenseFormatLimits.MaximumSignedLicenseTokenCharacters = 131072 -> int
+MySerialKey.GiqhDev.Licensing.EcdsaLicenseValidator.Validate(MySerialKey.GiqhDev.Licensing.SignedLicense! license, MySerialKey.GiqhDev.Licensing.LicenseValidationContext! context, MySerialKey.GiqhDev.Licensing.ILicenseVerificationKeyProvider! trustedKeyProvider) -> MySerialKey.GiqhDev.Licensing.LicenseValidationResult!
+MySerialKey.GiqhDev.Licensing.ILicenseVerificationKeyProvider
+MySerialKey.GiqhDev.Licensing.ILicenseVerificationKeyProvider.Find(string! keyId, string! algorithm) -> MySerialKey.GiqhDev.Licensing.LicenseVerificationKey?
+static MySerialKey.GiqhDev.Licensing.LicenseAlgorithms.IsSupported(string? algorithm) -> bool
+MySerialKey.GiqhDev.Licensing.LicenseFormatLimits
+MySerialKey.GiqhDev.Licensing.LicenseVerificationKey.Export() -> string!
+static MySerialKey.GiqhDev.Licensing.LicenseVerificationKey.Parse(string! token) -> MySerialKey.GiqhDev.Licensing.LicenseVerificationKey!
+static MySerialKey.GiqhDev.Licensing.LicenseVerificationKey.TryParse(string? token, out MySerialKey.GiqhDev.Licensing.LicenseVerificationKey? verificationKey) -> bool

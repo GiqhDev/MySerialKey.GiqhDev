@@ -6,8 +6,7 @@ namespace MySerialKey.GiqhDev.Licensing.Internal;
 internal static class SignedLicenseEnvelope
 {
     public const string CurrentFormat = "MSL1";
-    public const int Es256SignatureLength = 64;
-    private const int MaximumTokenLength = 131072;
+    public const int Es256SignatureLength = LicenseFormatLimits.Es256SignatureBytes;
     private static readonly UTF8Encoding StrictUtf8 = new UTF8Encoding(false, true);
 
     /// <summary>Creates a signed-license object with the fixed MSL1 version and ES256 algorithm.</summary>
@@ -60,7 +59,7 @@ internal static class SignedLicenseEnvelope
         license = null;
         if (token is null ||
             string.IsNullOrWhiteSpace(token) ||
-            token.Length > MaximumTokenLength)
+            token.Length > LicenseFormatLimits.MaximumSignedLicenseTokenCharacters)
         {
             return false;
         }
@@ -98,7 +97,9 @@ internal static class SignedLicenseEnvelope
             return false;
         }
 
-        if (string.IsNullOrWhiteSpace(keyId) || keyId.Length > 128)
+        if (string.IsNullOrWhiteSpace(keyId) ||
+            keyId.Length > LicenseFormatLimits.MaximumKeyIdCharacters ||
+            payload.Length > LicenseFormatLimits.MaximumSignedLicensePayloadBytes)
         {
             return false;
         }

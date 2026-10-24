@@ -42,6 +42,9 @@ jobs:
       - name: Test hardened parsers and supported targets
         run: dotnet test $env:SOLUTION_PATH -c Release --no-build --verbosity normal
 
+      - name: Verify MSL1 interoperability vector with Node/OpenSSL
+        run: node tests/vectors/verify-msl1-vector.mjs
+
       - name: Report vulnerable dependencies
         run: dotnet list $env:SOLUTION_PATH package --vulnerable --include-transitive
 

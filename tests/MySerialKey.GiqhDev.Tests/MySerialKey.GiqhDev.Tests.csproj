@@ -26,4 +26,10 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="../vectors/msl1-es256-vector.txt"
+          Link="vectors/msl1-es256-vector.txt"
+          CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

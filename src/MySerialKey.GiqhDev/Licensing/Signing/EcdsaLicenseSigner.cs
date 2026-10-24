@@ -18,9 +18,12 @@ public sealed class EcdsaLicenseSigner : ILicenseSigner
         Guard.NotNull(privateKey, nameof(privateKey));
         LicenseClaimsSerializer.ValidateForSigning(claims);
 
-        if (string.IsNullOrWhiteSpace(keyId))
+        if (string.IsNullOrWhiteSpace(keyId) ||
+            keyId.Length > LicenseFormatLimits.MaximumKeyIdCharacters)
         {
-            throw new ArgumentException("Key identifier cannot be empty.", nameof(keyId));
+            throw new ArgumentException(
+                "Key identifier must contain between 1 and 128 characters.",
+                nameof(keyId));
         }
 
         if (privateKey.KeySize != 256)

@@ -18,7 +18,8 @@ var claims = new LicenseClaims("package-consumer", "Package.Consumer", nowUtc)
 };
 
 SignedLicense license = new EcdsaLicenseSigner().Sign(claims, "package-test", signingKey);
-var trustedKeys = new[] { new LicenseVerificationKey("package-test", signingKey) };
+string publicKeyToken = new LicenseVerificationKey("package-test", signingKey).Export();
+var trustedKeys = new[] { LicenseVerificationKey.Parse(publicKeyToken) };
 LicenseValidationResult result = new EcdsaLicenseValidator().Validate(
     license,
     new LicenseValidationContext("Package.Consumer", nowUtc),

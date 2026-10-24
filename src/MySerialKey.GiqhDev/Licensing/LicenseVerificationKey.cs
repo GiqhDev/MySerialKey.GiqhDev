@@ -1,6 +1,7 @@
 using System;
 using System.Security.Cryptography;
 using MySerialKey.GiqhDev.Internal;
+using MySerialKey.GiqhDev.Licensing.Internal;
 
 namespace MySerialKey.GiqhDev.Licensing;
 
@@ -19,9 +20,12 @@ public sealed class LicenseVerificationKey
         Guard.NotNull(keyId, nameof(keyId));
         Guard.NotNull(publicKey, nameof(publicKey));
 
-        if (string.IsNullOrWhiteSpace(keyId))
+        if (string.IsNullOrWhiteSpace(keyId) ||
+            keyId.Length > LicenseFormatLimits.MaximumKeyIdCharacters)
         {
-            throw new ArgumentException("Key identifier cannot be empty.", nameof(keyId));
+            throw new ArgumentException(
+                "Key identifier must contain between 1 and 128 characters.",
+                nameof(keyId));
         }
 
         if (publicKey.KeySize != 256)
@@ -44,12 +48,47 @@ public sealed class LicenseVerificationKey
     /// </summary>
     public string Algorithm { get; }
 
+    /// <summary>
+    /// Exports this non-secret public key as a portable MSPK1 token.
+    /// </summary>
+    public string Export()
+    {
+        return LicenseVerificationKeyEnvelope.BuildToken(this);
+    }
+
+    /// <summary>
+    /// Parses a portable MSPK1 public-key token.
+    /// </summary>
+    public static LicenseVerificationKey Parse(string token)
+    {
+        if (!TryParse(token, out LicenseVerificationKey? verificationKey))
+        {
+            throw new FormatException("The public verification-key token is malformed.");
+        }
+
+        return verificationKey!;
+    }
+
+    /// <summary>
+    /// Attempts to parse a portable MSPK1 public-key token.
+    /// </summary>
+    public static bool TryParse(string? token, out LicenseVerificationKey? verificationKey)
+    {
+        return LicenseVerificationKeyEnvelope.TryParse(token, out verificationKey);
+    }
+
     /// <summary>Creates a disposable ECDSA instance from the stored public parameters.</summary>
     internal ECDsa CreatePublicKey()
     {
         ECDsa key = ECDsa.Create();
         key.ImportParameters(Clone(_parameters));
         return key;
+    }
+
+    /// <summary>Returns a defensive copy of the stored public parameters for portable export.</summary>
+    internal ECParameters ExportParameters()
+    {
+        return Clone(_parameters);
     }
 
     /// <summary>Copies public curve parameters so callers may safely dispose their original key object.</summary>

@@ -25,11 +25,9 @@ ILicenseSigner signer = new EcdsaLicenseSigner();
 SignedLicense license = signer.Sign(claims, KeyId, privateKey);
 
 string licensePath = Path.Combine(outputDirectory, "license.msl");
-string publicKeyPath = Path.Combine(outputDirectory, "public-key.spki");
+string publicKeyPath = Path.Combine(outputDirectory, "public-key.mspk");
 File.WriteAllText(licensePath, license.ToString());
-File.WriteAllText(
-    publicKeyPath,
-    Convert.ToBase64String(privateKey.ExportSubjectPublicKeyInfo()));
+File.WriteAllText(publicKeyPath, new LicenseVerificationKey(KeyId, privateKey).Export());
 
 Console.WriteLine($"License written to: {licensePath}");
 Console.WriteLine($"Public verification key written to: {publicKeyPath}");
