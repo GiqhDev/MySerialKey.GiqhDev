@@ -7,3 +7,5 @@ artifacts/
 *.suo
 *.nupkg
 *.snupkg
+
+.fake
