@@ -1,10 +1,27 @@
-using System;
 using System.Security.Cryptography;
 
 namespace MySerialKey.GiqhDev.Internal;
 
 internal static class SecureRandom
 {
+    /// <summary>Returns the requested number of cryptographically secure random bytes.</summary>
+    public static byte[] GetBytes(int length)
+    {
+        if (length <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(length));
+        }
+
+        var value = new byte[length];
+        using (RandomNumberGenerator random = RandomNumberGenerator.Create())
+        {
+            random.GetBytes(value);
+        }
+
+        return value;
+    }
+
+    /// <summary>Returns an unbiased cryptographically secure integer below the exclusive limit.</summary>
     public static int GetInt32(int maxExclusive)
     {
         if (maxExclusive <= 0)

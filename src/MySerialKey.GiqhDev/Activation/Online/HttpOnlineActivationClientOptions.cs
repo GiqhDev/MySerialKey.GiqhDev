@@ -1,0 +1,72 @@
+namespace MySerialKey.GiqhDev.Activation.Online;
+
+/// <summary>Configures the built-in HTTP online activation client.</summary>
+public sealed class HttpOnlineActivationClientOptions
+{
+    /// <summary>Initializes options with conventional version-one endpoints.</summary>
+    public HttpOnlineActivationClientOptions()
+    {
+        ActivationEndpoint = new Uri(ActivationServiceEndpoints.Activation, UriKind.Relative);
+        QueryEndpoint = new Uri(ActivationServiceEndpoints.LicenseQuery, UriKind.Relative);
+        RenewalEndpoint = new Uri(ActivationServiceEndpoints.Renewal, UriKind.Relative);
+        TransferEndpoint = new Uri(ActivationServiceEndpoints.Transfer, UriKind.Relative);
+        DeactivationEndpoint = new Uri(ActivationServiceEndpoints.Deactivation, UriKind.Relative);
+    }
+
+    /// <summary>Gets or sets the relative activation endpoint.</summary>
+    public Uri ActivationEndpoint { get; set; }
+
+    /// <summary>Gets or sets the relative current-license query endpoint.</summary>
+    public Uri QueryEndpoint { get; set; }
+
+    /// <summary>Gets or sets the relative renewal endpoint.</summary>
+    public Uri RenewalEndpoint { get; set; }
+
+    /// <summary>Gets or sets the relative license-transfer endpoint.</summary>
+    public Uri TransferEndpoint { get; set; }
+
+    /// <summary>Gets or sets the relative deactivation endpoint.</summary>
+    public Uri DeactivationEndpoint { get; set; }
+
+    /// <summary>Gets or sets the number of retries after the first attempt.</summary>
+    public int MaxRetries { get; set; } = 2;
+
+    /// <summary>Gets or sets the base delay used between transient failures.</summary>
+    public TimeSpan RetryDelay { get; set; } = TimeSpan.FromMilliseconds(250);
+
+    /// <summary>Gets or sets the maximum accepted response-body size.</summary>
+    public int MaximumResponseBytes { get; set; } = 1024 * 1024;
+
+    /// <summary>Validates endpoint shapes, retry bounds, delays, and response-size limits.</summary>
+    internal void Validate()
+    {
+        ValidateEndpoint(ActivationEndpoint, nameof(ActivationEndpoint));
+        ValidateEndpoint(QueryEndpoint, nameof(QueryEndpoint));
+        ValidateEndpoint(RenewalEndpoint, nameof(RenewalEndpoint));
+        ValidateEndpoint(TransferEndpoint, nameof(TransferEndpoint));
+        ValidateEndpoint(DeactivationEndpoint, nameof(DeactivationEndpoint));
+        if (MaxRetries < 0 || MaxRetries > 10)
+        {
+            throw new ArgumentOutOfRangeException(nameof(MaxRetries));
+        }
+
+        if (RetryDelay < TimeSpan.Zero || RetryDelay > TimeSpan.FromMinutes(1))
+        {
+            throw new ArgumentOutOfRangeException(nameof(RetryDelay));
+        }
+
+        if (MaximumResponseBytes < 1024 || MaximumResponseBytes > 16 * 1024 * 1024)
+        {
+            throw new ArgumentOutOfRangeException(nameof(MaximumResponseBytes));
+        }
+    }
+
+    /// <summary>Ensures an endpoint is a non-empty relative URI resolved by the caller-owned HttpClient.</summary>
+    private static void ValidateEndpoint(Uri endpoint, string parameterName)
+    {
+        if (endpoint is null || endpoint.IsAbsoluteUri || string.IsNullOrWhiteSpace(endpoint.OriginalString))
+        {
+            throw new ArgumentException("The endpoint must be a non-empty relative URI.", parameterName);
+        }
+    }
+}

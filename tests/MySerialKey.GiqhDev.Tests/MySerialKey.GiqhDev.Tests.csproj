@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks>net48;net10.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
@@ -15,6 +15,21 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/MySerialKey.GiqhDev/MySerialKey.GiqhDev.csproj" />
+    <ProjectReference Include="../MySerialKey.GiqhDev.ProcessProbe/MySerialKey.GiqhDev.ProcessProbe.csproj"
+                      ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Reference Include="System.Net.Http">
+      <HintPath>$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Net.Http.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../vectors/msl1-es256-vector.txt"
+          Link="vectors/msl1-es256-vector.txt"
+          CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

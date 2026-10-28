@@ -1,8 +1,11 @@
 using System;
 using System.Linq;
+using MySerialKey.GiqhDev.Formatting;
+using MySerialKey.GiqhDev.Generation;
 using MySerialKey.GiqhDev.Internal;
+using MySerialKey.GiqhDev.Security;
 
-namespace MySerialKey.GiqhDev;
+namespace MySerialKey.GiqhDev.Validation;
 
 /// <summary>
 /// Validates serial key format and authenticity.
@@ -163,6 +166,7 @@ public static class SerialKeyValidator
         return SerialValidationResult.Success(formatResult.NormalizedSerial);
     }
 
+    /// <summary>Determines whether a displayed character index belongs to a configured separator.</summary>
     private static bool IsSeparatorPosition(int index, SerialKeyGenerationOptions options)
     {
         int cursor = 0;

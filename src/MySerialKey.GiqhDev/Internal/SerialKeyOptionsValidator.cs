@@ -1,11 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using MySerialKey.GiqhDev.Generation;
 
 namespace MySerialKey.GiqhDev.Internal;
 
 internal static class SerialKeyOptionsValidator
 {
+    /// <summary>Validates all serial-format options and their combined size constraints.</summary>
     public static void Validate(SerialKeyGenerationOptions? options)
     {
         if (options is null)
@@ -50,11 +49,13 @@ internal static class SerialKeyOptionsValidator
         }
     }
 
+    /// <summary>Returns the configured alphabet in the casing used for generation and validation.</summary>
     public static string GetEffectiveAlphabet(SerialKeyGenerationOptions options)
     {
         return options.UseUppercase ? options.Alphabet.ToUpperInvariant() : options.Alphabet;
     }
 
+    /// <summary>Calculates the number of non-separator characters across all serial segments.</summary>
     public static int GetTotalCharacterCount(IReadOnlyList<int> segments)
     {
         int total = 0;
@@ -66,6 +67,7 @@ internal static class SerialKeyOptionsValidator
         return total;
     }
 
+    /// <summary>Calculates total displayed length including separators between segments.</summary>
     public static int GetVisibleCharacterCount(IReadOnlyList<int> segments)
     {
         return GetTotalCharacterCount(segments) + segments.Count - 1;

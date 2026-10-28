@@ -1,4 +1,4 @@
-namespace MySerialKey.GiqhDev;
+namespace MySerialKey.GiqhDev.Validation;
 
 /// <summary>
 /// Represents the result of serial key validation.

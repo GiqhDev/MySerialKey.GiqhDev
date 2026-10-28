@@ -1,0 +1,58 @@
+name: Security
+
+on:
+  push:
+    branches:
+      - dev
+      - master
+  pull_request:
+    branches:
+      - dev
+      - master
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  SOLUTION_PATH: MySerialKey.GiqhDev.slnx
+
+jobs:
+  verify:
+    name: Analyze, audit and test
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore and audit dependencies
+        run: dotnet restore $env:SOLUTION_PATH
+
+      - name: Build with analyzers
+        run: dotnet build $env:SOLUTION_PATH -c Release --no-restore
+
+      - name: Test hardened parsers and supported targets
+        run: dotnet test $env:SOLUTION_PATH -c Release --no-build --verbosity normal
+
+      - name: Verify MSL1 interoperability vector with Node/OpenSSL
+        run: node tests/vectors/verify-msl1-vector.mjs
+
+      - name: Report vulnerable dependencies
+        run: dotnet list $env:SOLUTION_PATH package --vulnerable --include-transitive
+
+      - name: Pack the library
+        run: dotnet pack src/MySerialKey.GiqhDev/MySerialKey.GiqhDev.csproj -c Release --no-build -o artifacts/security-packages
+
+      - name: Restore a consumer from the generated package
+        run: dotnet restore tests/MySerialKey.GiqhDev.PackageConsumer/MySerialKey.GiqhDev.PackageConsumer.csproj --configfile tests/MySerialKey.GiqhDev.PackageConsumer/NuGet.config
+
+      - name: Run the generated-package consumer
+        run: dotnet run --project tests/MySerialKey.GiqhDev.PackageConsumer/MySerialKey.GiqhDev.PackageConsumer.csproj -c Release --no-restore

@@ -1,7 +1,8 @@
 using System.Text;
+using MySerialKey.GiqhDev.Generation;
 using MySerialKey.GiqhDev.Internal;
 
-namespace MySerialKey.GiqhDev;
+namespace MySerialKey.GiqhDev.Formatting;
 
 /// <summary>
 /// Normalizes serial key input for validation and display.
@@ -50,6 +51,7 @@ public static class SerialKeyNormalizer
             : raw;
     }
 
+    /// <summary>Removes configured separators and normalizes casing before validation or formatting.</summary>
     internal static string GetRawSerial(string serial, SerialKeyGenerationOptions options)
     {
         var rawBuilder = new StringBuilder(serial.Length);

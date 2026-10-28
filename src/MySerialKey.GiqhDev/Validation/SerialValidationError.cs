@@ -1,4 +1,4 @@
-namespace MySerialKey.GiqhDev;
+namespace MySerialKey.GiqhDev.Validation;
 
 /// <summary>
 /// Describes serial validation failures.

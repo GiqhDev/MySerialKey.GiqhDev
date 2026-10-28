@@ -4,6 +4,7 @@ namespace MySerialKey.GiqhDev.Internal;
 
 internal static class FixedTimeComparer
 {
+    /// <summary>Compares equal-length ASCII authentication tags without early exit.</summary>
     public static bool Equals(string left, string right)
     {
         byte[] leftBytes = Encoding.ASCII.GetBytes(left);

@@ -1,10 +1,13 @@
+using MySerialKey.GiqhDev.Formatting;
+using MySerialKey.GiqhDev.Internal;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace MySerialKey.GiqhDev.Internal;
+namespace MySerialKey.GiqhDev.Security;
 
 internal static class SerialAuthenticator
 {
+    /// <summary>Creates the compact HMAC-derived tag appended to a legacy authenticated serial.</summary>
     public static string CreateAuthenticationTag(
         string payload,
         byte[] secretKey,

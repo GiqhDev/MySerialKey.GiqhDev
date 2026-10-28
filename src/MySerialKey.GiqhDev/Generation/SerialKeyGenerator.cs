@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Text;
+using MySerialKey.GiqhDev.Formatting;
 using MySerialKey.GiqhDev.Internal;
+using MySerialKey.GiqhDev.Security;
 
-namespace MySerialKey.GiqhDev;
+namespace MySerialKey.GiqhDev.Generation;
 
 /// <summary>
 /// Generates cryptographically secure serial keys.
@@ -80,6 +82,7 @@ public static class SerialKeyGenerator
         return SerialKeyFormatter.Format(payload + tag, effectiveOptions);
     }
 
+    /// <summary>Generates cryptographically random characters with unbiased alphabet selection.</summary>
     private static string GenerateRawPayload(int length, string alphabet)
     {
         var builder = new StringBuilder(length);

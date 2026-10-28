@@ -1,5 +1,67 @@
 # Changelog
 
+## 2.0.0-beta.1
+
+- Added versioned `MSL1` signed-license tokens.
+- Added ECDSA P-256/SHA-256 issuance and public-key validation.
+- Added typed validation for product, installation, validity period, schema, and signing key.
+- Added simultaneous trusted-key support for signing-key rotation.
+- Added deterministic binary claim encoding and canonical feature ordering.
+- Added a random, stable, product-scoped installation identifier provider.
+- Added protected storage and signed-license store abstractions for custom platforms.
+- Added Windows DPAPI protection with current-user and machine scopes.
+- Added atomic file persistence with typed missing, corruption, and availability states.
+- Added conventional `%LocalAppData%` and `%ProgramData%` storage roots for Windows.
+- Added explicit Windows ACL setup for machine-wide storage directories.
+- Documented the random installation identifier's data and privacy boundaries.
+- Added cross-process race coverage for stable installation identity creation.
+- Added explicit, configurable trial start with a seven-day suggested duration.
+- Added read-only trial queries, typed validation states, and remaining time.
+- Added an injectable clock, rollback tolerance, and optional trusted UTC time.
+- Added versioned protected trial persistence with corruption and deletion handling.
+- Added idempotent trial-to-license conversion while preserving trial history.
+- Added portable `MSAR1` offline activation requests with unique identifiers, cryptographic nonces, product and installation scope, and expiration.
+- Added signed `MSAP1` activation responses carrying the same standard `MSL1` license used by other activation channels.
+- Added administrative offline issuance without distributing private signing keys to client applications.
+- Added token and UTF-8 file import/export for offline requests and responses.
+- Added typed client-side validation for response signatures, trusted keys, request linkage, local scope, and validity windows.
+- Added protected consumption receipts and replay detection for imported offline requests.
+- Added versioned, product-neutral online activation, renewal, and deactivation contracts.
+- Added stable operation identifiers for idempotent service requests.
+- Added a transport-independent online activation client abstraction and typed client/service results.
+- Added an injectable `HttpClient` implementation for activation, renewal, and deactivation.
+- Added bounded versioned JSON responses, configurable endpoints, and typed HTTP/service failure mapping.
+- Added idempotent transient retries using a stable operation body and `Idempotency-Key` header.
+- Added mandatory `MSL1` signature, product, installation, and validity checks before online license persistence.
+- Added a current-license query contract and configurable HTTP endpoint.
+- Documented activation-service v1 authentication, rate limiting, administrative audit, and nonce-bound signed trusted time.
+- Added backward-compatible `MSL1` payload schema 2 with `NextCheckInUtc` and signed entitlement state.
+- Added typed `RefreshRequired`, `GracePeriod`, and `Revoked` validation outcomes.
+- Persist authentic signed revocation responses so a stale active license cannot remain locally effective.
+- Added a consumer-controlled grace policy that activates only after an unavailable online refresh.
+- Added an idempotent online transfer contract that validates the returned target installation before replacing local state.
+- Added portable `MSRL1` ES256-signed offline revocation lists scoped by product and validity window.
+- Added deterministic, bounded revocation payloads with sorted and deduplicated license identifiers.
+- Added protected revocation-list import with authenticated monotonic sequence rollback prevention.
+- Added optional offline revocation checks to the standard license-validation context without client secrets.
+- Enabled explicit current .NET analyzers, code-style enforcement, and NuGet vulnerability auditing with security advisories treated as build errors.
+- Added scheduled security CI, Dependabot coverage, and deterministic fuzz tests for all public portable-token parsers.
+- Added a checked public API baseline and analyzer enforcement for incompatible surface changes.
+- Added `IRevocationListValidator` to make signing and validation abstractions consistent.
+- Added separate generic issuer and client samples with an explicit private/public key boundary.
+- Added CI coverage that packs the library, restores a clean consumer from the generated NuGet package, and executes signed-license validation.
+- Documented the 2.0 package layout, target-framework policy, 1.x migration, and obsolescence strategy.
+- Published the enforced MSL1 token, payload, claim, feature, key identifier, and signature limits through `LicenseFormatLimits`.
+- Added portable `MSPK1` public-key export/import without requiring modern SPKI APIs on the consumer.
+- Added `ILicenseVerificationKeyProvider` and a validator overload for keys backed by configuration, certificates, databases, or custom stores.
+- Added an explicit ES256 algorithm allowlist and documented the side-by-side migration procedure for a future MSL2 format.
+- Added systematic authenticated-claim alteration, culture, UTC-offset, Unicode, and aggregate payload-limit tests.
+- Added a stable public MSL1/MSPK1 vector verified by both the .NET test suite and Node/OpenSSL without storing private key material.
+- Removed serial values and fixed sample secrets from console output and source examples.
+- Fixed atomic temporary paths for concurrent storage on .NET Framework `MAX_PATH` environments.
+- Preserved the existing serial and HMAC APIs for legacy compatibility.
+- Made the default serial segment collection immutable.
+
 ## 1.0.2
 
 - Disabled symbols package publishing to keep NuGet.org release uploads clean.

@@ -1,5 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MySerialKey.GiqhDev;
+using MySerialKey.GiqhDev.Formatting;
+using MySerialKey.GiqhDev.Generation;
+using MySerialKey.GiqhDev.Validation;
 
 namespace MySerialKey.GiqhDev.Tests;
 
