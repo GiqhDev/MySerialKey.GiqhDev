@@ -12,7 +12,7 @@ The package uses cryptographically secure randomness and has no third-party runt
 
 ## Status
 
-Version `1.0.2` is published on NuGet.org. Version `2.0.0-alpha.1` is under development on the `dev` branch.
+Version `1.0.2` is published on NuGet.org. Version `2.0.0-beta.1` is being prepared on the `dev` branch for external validation.
 
 ## Installation
 

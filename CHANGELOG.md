@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0-alpha.1
+## 2.0.0-beta.1
 
 - Added versioned `MSL1` signed-license tokens.
 - Added ECDSA P-256/SHA-256 issuance and public-key validation.
