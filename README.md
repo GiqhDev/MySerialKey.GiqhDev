@@ -12,7 +12,7 @@ The package uses cryptographically secure randomness and has no third-party runt
 
 ## Status
 
-Version `1.0.2` is published on NuGet.org. Version `2.0.0-beta.1` is being prepared on the `dev` branch for external validation.
+Version `2.0.0` is the current stable release line. It preserves the legacy 1.x serial APIs and adds signed licensing, activation, protected trial state, key rotation, and revocation for general-purpose .NET applications.
 
 ## Installation
 
@@ -498,15 +498,10 @@ The workflow runs on pushes to `master` and can also be started manually from th
 
 ## Roadmap
 
-- v2.0 alpha: signed-license core and key rotation.
-- v2.0 alpha: protected installation identity and signed-license persistence.
-- v2.0 alpha: configurable protected trial state.
-- v2.0 alpha: signed offline activation requests and responses.
-- v2.0 alpha: online activation-service contracts, refresh, transfer, and deactivation.
-- v2.0 alpha: signed offline revocation lists with protected rollback prevention.
-- v2.0 alpha: threat-model documentation, dependency auditing, analyzers, and parser fuzzing.
-- v2.0 alpha: public API baseline, separate issuer/client samples, package-consumer validation, and documented compatibility policy.
-- v2.0 next: close remaining acceptance criteria and prepare the beta.
+- v2.0: signed licensing, key rotation, protected installation identity, and trial state.
+- v2.0: offline and online activation, renewal, transfer, deactivation, grace, and revocation.
+- v2.0: public API baseline, interoperability vectors, dependency auditing, analyzers, parser fuzzing, and package-consumer validation.
+- Next: collect stable-release integration feedback while preserving the 2.0 public contracts and token formats.
 
 ## License
 
