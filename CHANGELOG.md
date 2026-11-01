@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.0
+
+- Promoted the externally validated `2.0.0-beta.1` API and token formats to the stable 2.0 release.
+- Preserved the shipped `MSL1`, `MSPK1`, `MSAR1`, `MSAP1`, and `MSRL1` interoperability contracts without breaking changes.
+- Updated GitHub Actions and `System.Security.Cryptography.ProtectedData` for modern targets before the final release validation.
+- Pinned the .NET 10 SDK and retained the test-tooling versions that execute the validated .NET Framework 4.8 and .NET 10 suites.
+- Retained compatibility with the existing 1.x serial generation, validation, normalization, and authenticated-serial APIs.
+
 ## 2.0.0-beta.1
 
 - Added versioned `MSL1` signed-license tokens.
